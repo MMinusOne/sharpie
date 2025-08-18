@@ -1,5 +1,6 @@
 enum VariableTypes {
 	String, 
 	Int,
-	Bool
+	Bool,
+	Null
 };

@@ -8,6 +8,8 @@
 #include "ScopeManager.h"
 #include "Scope.h"
 #include "VariableData.h";
+#include <algorithm>
+#include "TypeConverter.h"
 
 using std::string;
 using std::cout;
@@ -21,6 +23,15 @@ string getMainSharpieExecutionPath() {
     cout << "Enter the main sharpie execution path: ";
     std::getline(std::cin, executionPath);
     return executionPath;
+}
+
+vector<string> trimTokens(vector<string> tokens) {
+    vector<string> trimmedTokens;
+    std::copy_if(tokens.begin(), tokens.end(), std::back_inserter(trimmedTokens), [](const string& t) {
+        return !t.empty() && t != " ";
+   });
+
+    return trimmedTokens;
 }
 
 int main() {
@@ -43,14 +54,22 @@ int main() {
         // make trim until 1 white-space
         auto splitters = std::vector<string>{ " ", "(", ")" };
         std::vector<string> tokens = split(line, splitters);
+
         if (tokens.empty()) continue;
-        string opcode = tokens[0];
+        auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
+            return !t.empty() && t != " ";
+        });
+
         
+        if (it == tokens.end()) continue;
+        
+        auto opcode = *it;
+
         if (opcode == "fn") {
             if (currentScope != nullptr) continue;
             auto fnName = tokens[1];
 			currentScope = new Scope(fnName);
-            
+
             int argumentsIndex = 2;
             bool started = true;
             while (tokens.size()-1 >= argumentsIndex) {
@@ -64,27 +83,27 @@ int main() {
                     continue;
                 }
 
-                VariableTypes type;
-
-                if (token == "int") {
-                    type = VariableTypes::Int;
-                }
-                else if (token == "string") {
-                    type = VariableTypes::String;
-                }
-                else if (token == "bool") {
-                    type = VariableTypes::Bool;
-                }
+                VariableTypes type = convertToType(token);
 
                 string variableName = tokens[argumentsIndex + 1];
                 auto variableData = new VariableData(variableName, type);
                 currentScope->allocate(variableName, variableData);
                 argumentsIndex += 2;
             }
+
         }
         else if (opcode == "}") {
-            scopeManager->addScope(currentScope->get_identifier(), currentScope);
+            auto identifier = currentScope->get_identifier();
+            scopeManager->addScope(identifier, currentScope);
             currentScope = nullptr;
+        }
+        else if(opcode == "var") {
+            tokens = trimTokens(tokens);
+            VariableTypes type = convertToType(tokens[1]);
+            string name = tokens[2];
+            string value = tokens[4];
+            VariableData* variable = new VariableData(name, type, value);
+            currentScope->allocate(name, variable);
         }
         else {
 

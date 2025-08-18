@@ -10,5 +10,5 @@ std::string Scope::get_identifier() {
 }
 
 void Scope::allocate(string identifier, VariableData* variableData) {
-
+	memory[identifier] = variableData;
 }

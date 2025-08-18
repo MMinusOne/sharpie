@@ -9,6 +9,6 @@ class VariableData
 {
 public:
 	VariableData(string name, VariableTypes type);
-	//VariableData(string name, VariableTypes type, string value);
+	VariableData(string name, VariableTypes type, string value);
 };
 
