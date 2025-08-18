@@ -35,7 +35,7 @@ void Interpreter::execute() {
 			string name = tokens[2];
 			string value = tokens[4];
 			VariableData* variable = new VariableData(name, type, value);
-			currentScope->allocate(name, variable);
+			currentScope->allocateVariable(name, variable);
 		}
 		else {
 			//tokens = trimTokens(tokens);

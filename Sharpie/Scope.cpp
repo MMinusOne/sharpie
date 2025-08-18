@@ -9,6 +9,10 @@ std::string Scope::get_identifier() {
 	return identifier;
 }
 
-void Scope::allocate(string identifier, VariableData* variableData) {
-	memory[identifier] = variableData;
+void Scope::allocateVariable(string identifier, VariableData* variableData) {
+	variableStoreHeap[identifier] = variableData;
+}
+
+void Scope::allocateFunction(string identifier, FunctionData* functionData) {
+	functionStoreHeap[identifier] = functionData;
 }

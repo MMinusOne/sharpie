@@ -88,7 +88,7 @@ int main() {
                 string variableName = tokens[argumentsIndex + 1];
                 // Function data -> instroctions -> tokens
                 auto variableData = new VariableData(variableName, type);
-                currentScope->allocate(variableName, variableData);
+                currentScope->allocateVariable(variableName, variableData);
                 argumentsIndex += 2;
             }
 
