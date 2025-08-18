@@ -13,5 +13,6 @@ private:
 public:
 	static ScopeManager* getInstance();
 	void addScope(std::string scopeIdentifier, Scope* scope);
+	Scope* getGlobal(std::string id);
 };
 

@@ -1,5 +1,6 @@
+#pragma once
 enum VariableTypes {
-	String, 
+	String,
 	Int,
 	Bool,
 	Null

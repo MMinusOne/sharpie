@@ -15,3 +15,7 @@ ScopeManager* ScopeManager::getInstance() {
 void ScopeManager::addScope(std::string scopeIdentifier, Scope* scope) {
 	scopeMemory[scopeIdentifier] = scope;
 }
+
+Scope* ScopeManager::getGlobal(std::string id) {
+	return scopeMemory[id];
+}

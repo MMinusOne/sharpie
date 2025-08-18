@@ -33,8 +33,14 @@
     <ClCompile Include="VariableData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VariableTypes.h">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="FunctionData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardLibFunctionData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpretter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +60,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VariableTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeConverter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardLibFunctionData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpretter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

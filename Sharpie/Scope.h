@@ -6,7 +6,7 @@
 class Scope
 {
 private:
-	std::unordered_map<std::string, VariableData> memory;
+	std::unordered_map<std::string, VariableData*> memory;
 	std::string identifier;
 public:
 	Scope(std::string identifier);

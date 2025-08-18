@@ -10,6 +10,7 @@
 #include "VariableData.h";
 #include <algorithm>
 #include "TypeConverter.h"
+#include "Interpretter.h";
 
 using std::string;
 using std::cout;
@@ -34,8 +35,15 @@ vector<string> trimTokens(vector<string> tokens) {
     return trimmedTokens;
 }
 
+void initializeStandardLib() {
+    auto scopeManager = ScopeManager::getInstance();
+
+    Scope* log = new Scope("log");
+}
+
 int main() {
     auto scopeManager = ScopeManager::getInstance();
+    initializeStandardLib();
 
     string sharpiePath = getMainSharpieExecutionPath();
     ifstream file(sharpiePath);
@@ -51,9 +59,9 @@ int main() {
     Scope* currentScope = nullptr;
 
     for (const auto& line : lines) {
-        // make trim until 1 white-space
         auto splitters = std::vector<string>{ " ", "(", ")" };
         std::vector<string> tokens = split(line, splitters);
+        std::vector<std::vector<string>> instructions;
 
         if (tokens.empty()) continue;
         auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
@@ -86,6 +94,7 @@ int main() {
                 VariableTypes type = convertToType(token);
 
                 string variableName = tokens[argumentsIndex + 1];
+                // Function data -> instroctions -> tokens
                 auto variableData = new VariableData(variableName, type);
                 currentScope->allocate(variableName, variableData);
                 argumentsIndex += 2;
@@ -95,18 +104,15 @@ int main() {
         else if (opcode == "}") {
             auto identifier = currentScope->get_identifier();
             scopeManager->addScope(identifier, currentScope);
+
+            if (identifier == "main") {
+                auto interpretter = new Interpretter(instructions);
+                interpretter->execute();
+            }
             currentScope = nullptr;
         }
-        else if(opcode == "var") {
-            tokens = trimTokens(tokens);
-            VariableTypes type = convertToType(tokens[1]);
-            string name = tokens[2];
-            string value = tokens[4];
-            VariableData* variable = new VariableData(name, type, value);
-            currentScope->allocate(name, variable);
-        }
         else {
-
+            instructions.push_back(tokens);
         }
     }
 

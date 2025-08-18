@@ -1,6 +1,8 @@
 fn logNameAndAge (string name int age) {
-  console.writeLine("Name: {}".format(name));
-  console.write("Age: {}".format(age));
+  log("Name");
+  log(name);
+  log("Age");
+  log(age);
 }
 
 fn main () {

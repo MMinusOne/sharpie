@@ -123,21 +123,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FunctionData.cpp" />
+    <ClCompile Include="Interpretter.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="Scope.cpp" />
     <ClCompile Include="ScopeManager.cpp" />
     <ClCompile Include="Sharpie.cpp" />
     <ClCompile Include="Split.cpp" />
+    <ClCompile Include="StandardLibFunctionData.cpp" />
     <ClCompile Include="VariableData.cpp" />
-    <ClCompile Include="VariableTypes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FunctionData.h" />
+    <ClInclude Include="Interpretter.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scope.h" />
     <ClInclude Include="ScopeManager.h" />
     <ClInclude Include="Split.h" />
+    <ClInclude Include="StandardLibFunctionData.h" />
+    <ClInclude Include="TypeConverter.h" />
     <ClInclude Include="VariableData.h" />
+    <ClInclude Include="VariableTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sharpie.rc" />
