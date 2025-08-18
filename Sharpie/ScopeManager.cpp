@@ -2,7 +2,7 @@
 #include "Scope.h"
 #include "string";
 
-ScopeManager::ScopeManager(const ScopeManager&) = delete;
+ScopeManager* ScopeManager::instance = nullptr;
 
 ScopeManager* ScopeManager::getInstance() {
 	if (instance == nullptr) {

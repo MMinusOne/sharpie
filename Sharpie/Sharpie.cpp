@@ -40,13 +40,15 @@ int main() {
     Scope* currentScope = nullptr;
 
     for (const auto& line : lines) {
+        // make trim until 1 white-space
 		std::vector<string> tokens = split(line, " ");
         string opcode = tokens[0];
         
         if (opcode == "fn") {
-            if (currentScope == nullptr) {
-                currentScope = new Scope(tokens[1]);
-            }
+            if (currentScope != nullptr) continue;
+            auto fnName = tokens[1];
+			currentScope = new Scope(fnName);
+            cout << "Function registered, name: " << fnName << endl;
         }
         else if (opcode == "}") {
             scopeManager->addScope(currentScope->get_identifier(), currentScope);
