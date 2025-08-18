@@ -3,19 +3,33 @@
 #include <vector>
 #include <string>
 
-std::vector<std::string> split(std::string input, std::string splitter) {
-	std::vector<std::string> splitted;
-	std::string temp;
-	size_t pos = 0;
-	size_t splitterLength = splitter.length();
+std::vector<std::string> split(std::string input, const std::vector<std::string> splitters) {
+    std::vector<std::string> splitted;
+    std::string temp;
+    size_t pos = 0;
 
-	while ((pos = input.find(splitter)) != std::string::npos) {
-		temp = input.substr(0, pos);
-		splitted.push_back(temp);
-		input.erase(0, pos + splitterLength);
-	}
+    while (!input.empty()) {
+        size_t minPos = std::string::npos; 
+        std::string foundSplitter;
 
-	splitted.push_back(input);
+        for (const std::string& splitter : splitters) {
+            size_t splitterPos = input.find(splitter);
+            if (splitterPos < minPos) {
+                minPos = splitterPos;
+                foundSplitter = splitter;
+            }
+        }
 
-	return splitted;
+        if (minPos == std::string::npos) {
+            splitted.push_back(input);
+            break;
+        }
+
+        temp = input.substr(0, minPos);
+        splitted.push_back(temp);
+
+        input.erase(0, minPos + foundSplitter.length());
+    }
+
+    return splitted;
 }

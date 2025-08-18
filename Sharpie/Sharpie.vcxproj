@@ -124,12 +124,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Lexer.cpp" />
+    <ClCompile Include="Scope.cpp" />
+    <ClCompile Include="ScopeManager.cpp" />
     <ClCompile Include="Sharpie.cpp" />
     <ClCompile Include="Split.cpp" />
+    <ClCompile Include="VariableData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="Scope.h" />
+    <ClInclude Include="ScopeManager.h" />
     <ClInclude Include="Split.h" />
+    <ClInclude Include="VariableData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,4 +2,4 @@
 #include <vector>
 #include <string>
 
-std::vector<std::string> split(std::string input, std::string splitter);
+std::vector<std::string> split(std::string input, std::vector<std::string> splitter);

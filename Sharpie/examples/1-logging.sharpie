@@ -1,4 +1,4 @@
-fn logNameAndAge (string name, int age) {
+fn logNameAndAge (string name int age) {
   console.writeLine("Name: {}".format(name));
   console.write("Age: {}".format(age));
 }

@@ -41,14 +41,34 @@ int main() {
 
     for (const auto& line : lines) {
         // make trim until 1 white-space
-		std::vector<string> tokens = split(line, " ");
+        auto splitters = std::vector<string>{ " ", "(", ")" };
+        std::vector<string> tokens = split(line, splitters);
+        if (tokens.empty()) continue;
         string opcode = tokens[0];
         
         if (opcode == "fn") {
             if (currentScope != nullptr) continue;
             auto fnName = tokens[1];
 			currentScope = new Scope(fnName);
-            cout << "Function registered, name: " << fnName << endl;
+            
+            int argumentsIndex = 2;
+            bool started = true;
+            while (tokens.size()-1 >= argumentsIndex) {
+                auto token = tokens[argumentsIndex];
+                if (token.empty()) {
+                    if (!started) {
+                        break;
+                    }
+                    argumentsIndex++;
+                    started = false;
+                    continue;
+                }
+
+                string type = token;
+                string variableName = tokens[argumentsIndex + 1];
+                std::cout << "Argument Type: " << type << "\nArgument Name: " << variableName << endl;
+                argumentsIndex += 2;
+            }
         }
         else if (opcode == "}") {
             scopeManager->addScope(currentScope->get_identifier(), currentScope);
