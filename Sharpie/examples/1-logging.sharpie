@@ -1,5 +1,3 @@
-std::optin_scope(std::scope(std::scopes.global));
-
 fn logNameAndAge(string name, int age) {
   console.writeLine("Name: {}".format(name));
   console.write("Age: {}".format(age));
