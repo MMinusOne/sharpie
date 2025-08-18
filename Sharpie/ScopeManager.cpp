@@ -1,4 +1,6 @@
 #include "ScopeManager.h"
+#include "Scope.h"
+#include "string";
 
 ScopeManager::ScopeManager(const ScopeManager&) = delete;
 
@@ -8,4 +10,8 @@ ScopeManager* ScopeManager::getInstance() {
 	}
 
 	return instance;
+}
+
+void ScopeManager::addScope(std::string scopeIdentifier, Scope* scope) {
+	scopeMemory[scopeIdentifier] = scope;
 }

@@ -6,6 +6,8 @@
 #include "Lexer.h"
 #include "Split.h"
 #include "ScopeManager.h"
+#include "Scope.h"
+#include "VariableData.h";
 
 using std::string;
 using std::cout;
@@ -35,16 +37,22 @@ int main() {
     auto lexer = Lexer(mainCode);
     auto lines = lexer.getLines();
 
-
+    Scope* currentScope = nullptr;
 
     for (const auto& line : lines) {
 		std::vector<string> tokens = split(line, " ");
         string opcode = tokens[0];
         
         if (opcode == "fn") {
-
+            if (currentScope == nullptr) {
+                currentScope = new Scope(tokens[1]);
+            }
         }
         else if (opcode == "}") {
+            scopeManager->addScope(currentScope->get_identifier(), currentScope);
+            currentScope = nullptr;
+        }
+        else {
 
         }
     }
