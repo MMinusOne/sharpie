@@ -64,9 +64,21 @@ int main() {
                     continue;
                 }
 
-                string type = token;
+                VariableTypes type;
+
+                if (token == "int") {
+                    type = VariableTypes::Int;
+                }
+                else if (token == "string") {
+                    type = VariableTypes::String;
+                }
+                else if (token == "bool") {
+                    type = VariableTypes::Bool;
+                }
+
                 string variableName = tokens[argumentsIndex + 1];
-                std::cout << "Argument Type: " << type << "\nArgument Name: " << variableName << endl;
+                auto variableData = new VariableData(variableName, type);
+                currentScope->allocate(variableName, variableData);
                 argumentsIndex += 2;
             }
         }

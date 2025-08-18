@@ -129,13 +129,18 @@
     <ClCompile Include="Sharpie.cpp" />
     <ClCompile Include="Split.cpp" />
     <ClCompile Include="VariableData.cpp" />
+    <ClCompile Include="VariableTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Scope.h" />
     <ClInclude Include="ScopeManager.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="VariableData.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Sharpie.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

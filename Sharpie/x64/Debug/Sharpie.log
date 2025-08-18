@@ -1,3 +1,9 @@
-﻿  Sharpie.cpp
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\Sharpie.cpp(10,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+﻿  VariableData.cpp
+C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(1,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'VariableData.cpp')
+  
+C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(3,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'VariableData.cpp')
+  
+C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.cpp(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   Sharpie.vcxproj -> C:\Users\LENOVO\Desktop\sharpie\x64\Debug\Sharpie.exe

@@ -11,5 +11,6 @@ private:
 public:
 	Scope(std::string identifier);
 	std::string get_identifier();
+	void allocate(string identifier, VariableData* variableData);
 };
 
