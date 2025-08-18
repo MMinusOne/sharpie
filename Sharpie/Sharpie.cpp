@@ -31,6 +31,9 @@ void initializeStandardLib() {
     auto scopeManager = ScopeManager::getInstance();
 
     Scope* log = new Scope("log");
+    std::vector<std::vector<std::string>> logInstructions = { {} };
+    log->allocateInstructions("log", logInstructions);
+    scopeManager->addScope("log", log);
 }
 
 int main() {
@@ -95,11 +98,12 @@ int main() {
         }
         else if (opcode == "}") {
             auto identifier = currentScope->get_identifier();
+            currentScope->allocateInstructions(identifier, instructions);
             scopeManager->addScope(identifier, currentScope);
-
+            
             if (identifier == "main") {
-                auto interpretter = new Interpreter(instructions, currentScope);
-                interpretter->execute();
+                auto interpreter = new Interpreter(instructions, currentScope);
+                interpreter->execute();
             }
             instructions.clear();
             currentScope = nullptr;

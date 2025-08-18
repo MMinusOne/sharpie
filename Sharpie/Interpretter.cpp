@@ -38,9 +38,11 @@ void Interpreter::execute() {
 			currentScope->allocateVariable(name, variable);
 		}
 		else {
-			//tokens = trimTokens(tokens);
-			//string fnName = tokens[0];
-			//auto fn = scopeManager->getGlobal(fnName);
+			tokens = trimTokens(tokens);
+			string fnName = tokens[0];
+			auto fn = scopeManager->getGlobal(fnName);
+			auto fnInterpreter = new Interpreter(fn->getInstructions());
+			fnInterpreter->execute();
 		}
 	}
 }

@@ -13,6 +13,10 @@ void Scope::allocateVariable(string identifier, VariableData* variableData) {
 	variableStoreHeap[identifier] = variableData;
 }
 
-void Scope::allocateFunction(string identifier, FunctionData* functionData) {
-	functionStoreHeap[identifier] = functionData;
+void Scope::allocateInstructions(string identifier, std::vector<std::vector<string>> instructions) {
+	this->instructions= instructions;
+}
+
+std::vector<std::vector<string>> Scope::getInstructions() {
+	return this->instructions;
 }
