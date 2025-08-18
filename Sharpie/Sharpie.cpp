@@ -11,6 +11,7 @@
 #include <algorithm>
 #include "TypeConverter.h"
 #include "Interpretter.h";
+#include "trimTokens.h"
 
 using std::string;
 using std::cout;
@@ -24,15 +25,6 @@ string getMainSharpieExecutionPath() {
     cout << "Enter the main sharpie execution path: ";
     std::getline(std::cin, executionPath);
     return executionPath;
-}
-
-vector<string> trimTokens(vector<string> tokens) {
-    vector<string> trimmedTokens;
-    std::copy_if(tokens.begin(), tokens.end(), std::back_inserter(trimmedTokens), [](const string& t) {
-        return !t.empty() && t != " ";
-   });
-
-    return trimmedTokens;
 }
 
 void initializeStandardLib() {
@@ -58,16 +50,16 @@ int main() {
 
     Scope* currentScope = nullptr;
 
+    std::vector<std::vector<string>> instructions;
+
     for (const auto& line : lines) {
         auto splitters = std::vector<string>{ " ", "(", ")" };
         std::vector<string> tokens = split(line, splitters);
-        std::vector<std::vector<string>> instructions;
 
         if (tokens.empty()) continue;
         auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
             return !t.empty() && t != " ";
         });
-
         
         if (it == tokens.end()) continue;
         
@@ -106,9 +98,10 @@ int main() {
             scopeManager->addScope(identifier, currentScope);
 
             if (identifier == "main") {
-                auto interpretter = new Interpretter(instructions);
+                auto interpretter = new Interpreter(instructions, currentScope);
                 interpretter->execute();
             }
+            instructions.clear();
             currentScope = nullptr;
         }
         else {

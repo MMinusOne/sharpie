@@ -1,7 +1,7 @@
 #pragma once
 #include "VariableData.h"
 
-VariableTypes convertToType(std::string type) {
+inline VariableTypes convertToType(std::string type) {
 	if (type == "bool") {
 		return VariableTypes::Bool;
 	}

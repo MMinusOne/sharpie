@@ -1,12 +1,15 @@
 #include <string>
 #include <vector>
+#include "Scope.h"
 
 #pragma once
-class Interpretter
+class Interpreter
 {
 	std::vector<std::vector<std::string>> instructions;
+	Scope* scope;
 public:
-	Interpretter(std::vector<std::vector<std::string>> instructions);
+	Interpreter(std::vector<std::vector<std::string>> instructions);
+	Interpreter(std::vector<std::vector<std::string>> instructions, Scope* scope);
 	void execute();
 };
 

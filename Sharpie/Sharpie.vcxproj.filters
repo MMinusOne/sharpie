@@ -77,6 +77,9 @@
     <ClInclude Include="Interpretter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="trimTokens.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sharpie.rc">

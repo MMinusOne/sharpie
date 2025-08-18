@@ -142,6 +142,7 @@
     <ClInclude Include="ScopeManager.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="StandardLibFunctionData.h" />
+    <ClInclude Include="trimTokens.h" />
     <ClInclude Include="TypeConverter.h" />
     <ClInclude Include="VariableData.h" />
     <ClInclude Include="VariableTypes.h" />
