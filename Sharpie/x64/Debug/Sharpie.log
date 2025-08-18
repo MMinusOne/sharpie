@@ -5,21 +5,6 @@ C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(1,10): warning C4067: une
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(3,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'Interpretter.cpp')
   
-  Scope.cpp
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(1,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  (compiling source file 'Scope.cpp')
-  
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(3,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  (compiling source file 'Scope.cpp')
-  
-  ScopeManager.cpp
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(1,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  (compiling source file 'ScopeManager.cpp')
-  
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(3,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  (compiling source file 'ScopeManager.cpp')
-  
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\ScopeManager.cpp(3,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   Sharpie.cpp
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(1,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'Sharpie.cpp')

@@ -41,8 +41,13 @@ void Interpreter::execute() {
 			tokens = trimTokens(tokens);
 			string fnName = tokens[0];
 			auto fn = scopeManager->getGlobal(fnName);
-			auto fnInterpreter = new Interpreter(fn->getInstructions());
-			fnInterpreter->execute();
+			if (fn->getIsStandardLib()) {
+				fn->executeStandardLib();
+			}
+			else {
+				auto fnInterpreter = new Interpreter(fn->getInstructions());
+				fnInterpreter->execute();
+			}
 		}
 	}
 }

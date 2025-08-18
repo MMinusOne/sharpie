@@ -21,99 +21,100 @@ using std::stringstream;
 using std::vector;
 
 string getMainSharpieExecutionPath() {
-    string executionPath;
-    cout << "Enter the main sharpie execution path: ";
-    std::getline(std::cin, executionPath);
-    return executionPath;
+	string executionPath;
+	cout << "Enter the main sharpie execution path: ";
+	std::getline(std::cin, executionPath);
+	return executionPath;
 }
 
 void initializeStandardLib() {
-    auto scopeManager = ScopeManager::getInstance();
+	auto scopeManager = ScopeManager::getInstance();
 
-    Scope* log = new Scope("log");
-    std::vector<std::vector<std::string>> logInstructions = { {} };
-    log->allocateInstructions("log", logInstructions);
-    scopeManager->addScope("log", log);
+	Scope* log = new Scope("log");
+	log->allocateStandardLib([]() {
+		cout << "Testing";
+	});
+	scopeManager->addScope("log", log);
 }
 
 int main() {
-    auto scopeManager = ScopeManager::getInstance();
-    initializeStandardLib();
+	auto scopeManager = ScopeManager::getInstance();
+	initializeStandardLib();
 
-    string sharpiePath = getMainSharpieExecutionPath();
-    ifstream file(sharpiePath);
-    stringstream mainBuffer;
-    mainBuffer << file.rdbuf();
+	string sharpiePath = getMainSharpieExecutionPath();
+	ifstream file(sharpiePath);
+	stringstream mainBuffer;
+	mainBuffer << file.rdbuf();
 
-    string mainCode;
-    mainCode = mainBuffer.str();
+	string mainCode;
+	mainCode = mainBuffer.str();
 
-    auto lexer = Lexer(mainCode);
-    auto lines = lexer.getLines();
+	auto lexer = Lexer(mainCode);
+	auto lines = lexer.getLines();
 
-    Scope* currentScope = nullptr;
+	Scope* currentScope = nullptr;
 
-    std::vector<std::vector<string>> instructions;
+	std::vector<std::vector<string>> instructions;
 
-    for (const auto& line : lines) {
-        auto splitters = std::vector<string>{ " ", "(", ")" };
-        std::vector<string> tokens = split(line, splitters);
+	for (const auto& line : lines) {
+		auto splitters = std::vector<string>{ " ", "(", ")" };
+		std::vector<string> tokens = split(line, splitters);
 
-        if (tokens.empty()) continue;
-        auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
-            return !t.empty() && t != " ";
-        });
-        
-        if (it == tokens.end()) continue;
-        
-        auto opcode = *it;
+		if (tokens.empty()) continue;
+		auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
+			return !t.empty() && t != " ";
+			});
 
-        if (opcode == "fn") {
-            if (currentScope != nullptr) continue;
-            auto fnName = tokens[1];
+		if (it == tokens.end()) continue;
+
+		auto opcode = *it;
+
+		if (opcode == "fn") {
+			if (currentScope != nullptr) continue;
+			auto fnName = tokens[1];
 			currentScope = new Scope(fnName);
 
-            int argumentsIndex = 2;
-            bool started = true;
-            while (tokens.size()-1 >= argumentsIndex) {
-                auto token = tokens[argumentsIndex];
-                if (token.empty()) {
-                    if (!started) {
-                        break;
-                    }
-                    argumentsIndex++;
-                    started = false;
-                    continue;
-                }
+			int argumentsIndex = 2;
+			bool started = true;
+			while (tokens.size() - 1 >= argumentsIndex) {
+				auto token = tokens[argumentsIndex];
+				if (token.empty()) {
+					if (!started) {
+						break;
+					}
+					argumentsIndex++;
+					started = false;
+					continue;
+				}
 
-                VariableTypes type = convertToType(token);
+				VariableTypes type = convertToType(token);
 
-                string variableName = tokens[argumentsIndex + 1];
-                // Function data -> instroctions -> tokens
-                auto variableData = new VariableData(variableName, type);
-                currentScope->allocateVariable(variableName, variableData);
-                argumentsIndex += 2;
-            }
+				string variableName = tokens[argumentsIndex + 1];
+				// Function data -> instroctions -> tokens
+				auto variableData = new VariableData(variableName, type);
+				currentScope->allocateVariable(variableName, variableData);
+				argumentsIndex += 2;
+			}
 
-        }
-        else if (opcode == "}") {
-            auto identifier = currentScope->get_identifier();
-            currentScope->allocateInstructions(identifier, instructions);
-            scopeManager->addScope(identifier, currentScope);
-            
-            if (identifier == "main") {
-                auto interpreter = new Interpreter(instructions, currentScope);
-                interpreter->execute();
-            }
-            instructions.clear();
-            currentScope = nullptr;
-        }
-        else {
-            instructions.push_back(tokens);
-        }
-    }
+		}
+		else if (opcode == "}") {
+			auto identifier = currentScope->get_identifier();
+			currentScope->allocateInstructions(identifier, instructions);
+			scopeManager->addScope(identifier, currentScope);
 
-    return 0;
+			if (identifier == "main") {
+				auto interpreter = new Interpreter(instructions, currentScope);
+				interpreter->execute();
+			}
+			instructions.clear();
+			currentScope = nullptr;
+		}
+		else {
+			instructions.push_back(tokens);
+		}
+	}
+
+	return 0;
 }
 
 /**

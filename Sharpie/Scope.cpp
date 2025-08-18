@@ -20,3 +20,13 @@ void Scope::allocateInstructions(string identifier, std::vector<std::vector<stri
 std::vector<std::vector<string>> Scope::getInstructions() {
 	return this->instructions;
 }
+
+void Scope::allocateStandardLib(std::function<void()> execution) {
+	standardLibInstructions = execution;
+	isStandardLib = true;
+}
+
+void Scope::executeStandardLib() {
+	if (standardLibInstructions == nullptr) return;
+	standardLibInstructions();
+}
