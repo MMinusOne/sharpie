@@ -19,7 +19,11 @@ fn main () {
   var string name = "Michael Salloum";
   var int age = 29;
 
-  do_if (age > 18)
+  do_if (age < 18) 
     logMinorNameAndAge(name age);
+  if_end 
+
+  do_if (age > 18)
+    logAdultNameAndAge(name age);
   if_end
 }

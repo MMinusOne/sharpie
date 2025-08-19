@@ -39,8 +39,8 @@ void initializeStandardLib() {
 
 	Scope* newLine = new Scope("newLine");
 	newLine->allocateStandardLib([](std::vector<string> args) {
-	    std::cout << "\n";
-	});
+		std::cout << "\n";
+		});
 
 	scopeManager->addScope("log", log);
 	scopeManager->addScope("newLine", newLine);

@@ -47,21 +47,21 @@ void Interpreter::execute() {
 		currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 
 		if (opcode == "var") {
+			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			this->handleVariable(tokens, currentScopes[currentScopes.size() - 1]);
 		}
 		else if (opcode == "do_if") {
+			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			tokens = trimTokens(tokens);
 			std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
 			bool conditionState = this->handleCondition(relevantTokens, currentScopes[currentScopes.size() - 1]);
 			auto newScope = new Scope("0x" + currentScopes.size());
 			newScope->setParent(currentScopes[currentScopes.size() - 1]);
 			currentScopes.push_back(newScope);
-			if(!conditionState) newScope->block();
+			if (!conditionState) newScope->block();
 		}
 		else if (opcode == "if_end") {
-			if (!currentScopes[currentScopes.size() - 1]->isBlocked()) {
-				currentScopes.pop_back();
-			}
+			currentScopes.pop_back();
 		}
 		else {
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
@@ -80,8 +80,10 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 		auto token = tokens[i];
 		if (i != 4) value += " ";
 		value += token;
-		if (token[token.size() - 2] == '"') {
-			break;
+		if (type == VariableTypes::String) {
+			if (token[token.size() - 2] == '"') {
+				break;
+			}
 		}
 	}
 
