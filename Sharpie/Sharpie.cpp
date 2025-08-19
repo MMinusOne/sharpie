@@ -131,6 +131,8 @@ int main() {
  * Map function -> scope, inner-code
  * Get main function
  * Go thru the inner-code
+ *  ./examples/test.sharpie
  *  ./examples/1-logging.sharpie
  *  ./examples/2-if-statements.sharpie
+ *  ./examples/3-loops.sharpie
  */

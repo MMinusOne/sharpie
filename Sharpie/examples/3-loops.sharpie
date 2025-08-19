@@ -1,0 +1,28 @@
+fn logNormal(int index) {
+    newLine();
+    log("I am now" index "years old");
+    newLine();
+}
+
+fn logHappy(int index) {
+    newLine();
+    log("I AM FINALLY" index "YEARS OLD WIWIWIWIW");
+    newLine();
+}
+
+fn main() { 
+    var int start = 20;
+    var int end = 31;
+
+    for (index;start;end)
+
+        do_if (index < 30) 
+            logNormal(index);
+        if_end
+
+        do_if (index == 25) 
+            logHappy(index);
+        if_end
+
+    for_end
+}

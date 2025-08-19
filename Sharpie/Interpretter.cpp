@@ -44,26 +44,68 @@ void Interpreter::execute() {
 
 		auto opcode = *it;
 
-		currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
-
 		if (opcode == "var") {
+			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			this->handleVariable(tokens, currentScopes[currentScopes.size() - 1]);
 		}
+		else if (opcode == "for") {
+			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
+			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
+			tokens = trimTokens(tokens);
+			auto newScope = new Scope("for");
+			newScope->addInstructions(tokens);
+			newScope->setParent(currentScopes[currentScopes.size() - 1]);
+			newScope->block();
+			currentScopes.push_back(newScope);
+		}
+		else if (opcode == "for_end") {
+			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
+			currentScopes[currentScopes.size() - 1]->unblock();
+			vector<vector<string>> forLoopInstructions = currentScopes[currentScopes.size() - 1][0].getInstructions();
+
+			auto forLoopDefinition = forLoopInstructions[0];
+
+			string variableName = forLoopDefinition[1];
+			int start = std::stoi(getStringOrVariableValue(forLoopDefinition[2], currentScopes[currentScopes.size()-1]));
+			int end = std::stoi(getStringOrVariableValue(forLoopDefinition[3], currentScopes[currentScopes.size() - 1]));
+
+			VariableData* indexVariable = new VariableData(variableName, VariableTypes::Int, std::to_string(start));
+
+			forLoopInstructions.pop_back();
+			forLoopInstructions.erase(forLoopInstructions.begin());
+
+			currentScopes[currentScopes.size() - 1]->allocateVariable("index", indexVariable);
+
+			auto forLoopInterpreter = new Interpreter(forLoopInstructions,  currentScopes[currentScopes.size()-1]);
+
+			for (int i = start; i < end; i++) {
+				VariableData* indexVariable = new VariableData(variableName, VariableTypes::Int, std::to_string(i));
+				currentScopes[currentScopes.size() - 1]->allocateVariable("index", indexVariable);
+
+				forLoopInterpreter->execute();
+			}
+
+			currentScopes.pop_back();
+		}
 		else if (opcode == "do_if") {
+			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			tokens = trimTokens(tokens);
 			std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
 			bool conditionState = this->handleCondition(relevantTokens, currentScopes[currentScopes.size() - 1]);
-			auto newScope = new Scope("0x" + currentScopes.size());
+			auto newScope = new Scope("if");
 			newScope->setParent(currentScopes[currentScopes.size() - 1]);
-			currentScopes.push_back(newScope);
 			if (!conditionState) newScope->block();
+			currentScopes.push_back(newScope);
 		}
 		else if (opcode == "if_end") {
+			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
+			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			currentScopes.pop_back();
 		}
 		else {
+			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			this->handleFunction(tokens, currentScopes[currentScopes.size() - 1]);
 		}
@@ -142,7 +184,7 @@ bool Interpreter::handleCondition(std::vector<string>& tokens, Scope* currentSco
 
 		}
 		else if (op == "==") {
-
+			isValid = leftSide == rightSide;
 		}
 	}
 
@@ -174,30 +216,29 @@ std::string Interpreter::getStringOrVariableValue(string& code, Scope* currentSc
 
 std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<string>& tokens, Scope* currentScope) {
 	bool argIsString = false;
-	std::vector<std::string> args;
+	std::vector<std::string> args = { {} };
 	for (int i = 0; i < tokens.size(); i++) {
 		string token = tokens[i];
 
 		if (argIsString) {
 			if (i == tokens.size() - 1) args[0] += " ";
 			if (token[token.size() - 1] == '"') {
-				args[0] += " ";
-				args[0] += (token.substr(0, token.size() - 1));
+				args.push_back(token.substr(0, token.size() - 1));
 				argIsString = false;
 			}
 			else {
-				args[0] += token;
-				args[0] += " ";
+				args.push_back(token);
 			}
 		}
 		else if (token[0] == '"') {
 			if (args.size() == 0) args.push_back("");
 			if (token[token.size() - 1] == '"') {
 				args[0] += (token.substr(1, token.size() - 2));
+				argIsString = false;
+				continue;
 			}
 			else {
-				args[0] += (token.substr(1, token.size() - 1));
-				args[0] += " ";
+				args.push_back(token.substr(1, token.size() - 1));
 			}
 			argIsString = true;
 		}
@@ -206,9 +247,11 @@ std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<str
 			if (varData == nullptr) {
 				args.push_back("null");
 			};
+
 			args.push_back(varData->getValue());
 		}
 	}
 
 	return args;
 }
+
