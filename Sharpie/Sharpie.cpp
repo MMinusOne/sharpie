@@ -33,7 +33,7 @@ void initializeStandardLib() {
 	Scope* log = new Scope("log");
 	log->allocateStandardLib([](std::vector<string> args) {
 		for (int i = 0; i < args.size(); i++) {
-			std::cout << args[i];
+			std::cout << args[i] << endl;
 		}
 	});
 	scopeManager->addScope("log", log);

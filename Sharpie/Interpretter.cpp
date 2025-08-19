@@ -46,7 +46,17 @@ void Interpreter::execute() {
 			tokens = trimTokens(tokens);
 			VariableTypes type = convertToType(tokens[1]);
 			string name = tokens[2];
-			string value = tokens[4];
+			string value;
+			
+			for (int i = 4; i < tokens.size(); i++) {
+				auto token = tokens[i];
+				if(i != 4) value += " ";
+				value += token;
+				if(token[token.size()-2] == '"') {
+					break;
+				}
+			}
+
 			VariableData* variable = new VariableData(name, type, value);
 			currentScope->allocateVariable(name, variable);
 		}
@@ -60,7 +70,7 @@ void Interpreter::execute() {
 					auto token = tokens[i];
 
 					if (token[0] == '"') {
-						args.push_back(token);
+						args.push_back(token.substr(1,token.size()-2));
 					}
 					else {
 						VariableData* varData = currentScope->getVariable(token);

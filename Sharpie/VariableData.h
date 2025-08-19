@@ -1,6 +1,5 @@
 #include "string";
 #include "VariableTypes.h"
-#include "string";
 #pragma once
 
 using std::string;
