@@ -47,12 +47,12 @@ void Interpreter::execute() {
 			VariableTypes type = convertToType(tokens[1]);
 			string name = tokens[2];
 			string value;
-			
+
 			for (int i = 4; i < tokens.size(); i++) {
 				auto token = tokens[i];
-				if(i != 4) value += " ";
+				if (i != 4) value += " ";
 				value += token;
-				if(token[token.size()-2] == '"') {
+				if (token[token.size() - 2] == '"') {
 					break;
 				}
 			}
@@ -65,14 +65,31 @@ void Interpreter::execute() {
 			string fnName = tokens[0];
 			auto fn = scopeManager->getGlobal(fnName);
 
-			if (args.empty()) {
+			if (args.empty() && !tokens.empty()) {
+				auto argIsString = false;
 				for (int i = 1; i < tokens.size(); i++) {
-					auto token = tokens[i];
+					string token = tokens[i];
 
-					if (token[0] == '"') {
-						args.push_back(token.substr(1,token.size()-2));
+					if (argIsString) {
+						if (i == tokens.size() - 1) args[0] += " ";
+						if (token[token.size() - 1] == '"') {
+							args[0] += (token.substr(0, token.size() - 1));
+						}
+						else {
+							args[0] += token;
+						}
 					}
-					else {
+					else if (token[0] == '"') {
+						if (args.size() == 0) args.push_back("");
+						if (token[token.size() - 1] == '"') {
+							args[0] += (token.substr(1, token.size() - 2));
+						}
+						else {
+							args[0] += (token.substr(1, token.size() - 1));
+						}
+						argIsString = true;
+					}
+					else if (!argIsString) {
 						VariableData* varData = currentScope->getVariable(token);
 						if (varData == nullptr) {
 							args.push_back("null");
