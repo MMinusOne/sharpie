@@ -44,13 +44,12 @@ void Interpreter::execute() {
 
 		auto opcode = *it;
 
+		currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 		if (opcode == "var") {
-			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			this->handleVariable(tokens, currentScopes[currentScopes.size() - 1]);
 		}
 		else if (opcode == "for") {
-			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			tokens = trimTokens(tokens);
 			auto newScope = new Scope("for");
@@ -60,11 +59,10 @@ void Interpreter::execute() {
 			currentScopes.push_back(newScope);
 		}
 		else if (opcode == "for_end") {
-			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 			currentScopes[currentScopes.size() - 1]->unblock();
-			vector<vector<string>> forLoopInstructions = currentScopes[currentScopes.size() - 1][0].getInstructions();
+			vector<vector<string>> forLoopInstructions = currentScopes[currentScopes.size()-1]->getInstructions();
 
-			auto forLoopDefinition = forLoopInstructions[0];
+			auto forLoopDefinition = trimTokens(forLoopInstructions[0]);
 
 			string variableName = forLoopDefinition[1];
 			int start = std::stoi(getStringOrVariableValue(forLoopDefinition[2], currentScopes[currentScopes.size()-1]));
@@ -89,23 +87,39 @@ void Interpreter::execute() {
 			currentScopes.pop_back();
 		}
 		else if (opcode == "do_if") {
-			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
-			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
+			auto lastScope = currentScopes[currentScopes.size() - 1];
+			if (lastScope->isBlocked()) continue;
 			tokens = trimTokens(tokens);
-			std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
-			bool conditionState = this->handleCondition(relevantTokens, currentScopes[currentScopes.size() - 1]);
 			auto newScope = new Scope("if");
-			newScope->setParent(currentScopes[currentScopes.size() - 1]);
-			if (!conditionState) newScope->block();
+			newScope->addInstructions(tokens);
+			newScope->setParent(lastScope);
+			newScope->block();
 			currentScopes.push_back(newScope);
 		}
 		else if (opcode == "if_end") {
-			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
-			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
-			currentScopes.pop_back();
+			if (currentScopes[currentScopes.size() - 2]->isBlocked()) continue;
+			auto lastScope = currentScopes[currentScopes.size() - 1];
+
+			currentScopes[currentScopes.size() - 1]->unblock();
+			vector<vector<string>> ifInstructions = currentScopes[currentScopes.size() - 1][0].getInstructions();
+
+			auto ifDefinition = trimTokens(ifInstructions[0]);
+
+			std::vector<string> relevantTokens(ifDefinition.begin() + 1, ifDefinition.end());
+			bool conditionState = handleCondition(relevantTokens, currentScopes[currentScopes.size()-1]);
+
+			ifInstructions.pop_back();
+			ifInstructions.erase(ifInstructions.begin());
+
+			auto ifInterpreter = new Interpreter(ifInstructions, currentScopes[currentScopes.size() - 1]);
+
+			if(conditionState){
+				ifInterpreter->execute();
+			}
+
+			if(lastScope->get_identifier() == "if") currentScopes.pop_back();
 		}
 		else {
-			currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			this->handleFunction(tokens, currentScopes[currentScopes.size() - 1]);
 		}
