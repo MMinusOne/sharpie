@@ -33,10 +33,19 @@ void initializeStandardLib() {
 	Scope* log = new Scope("log");
 	log->allocateStandardLib([](std::vector<string> args) {
 		for (int i = 0; i < args.size(); i++) {
-			std::cout << args[i] << endl;
+			std::cout << args[i] << " ";
 		}
-	});
+		});
+
+	Scope* newLine = new Scope("newLine");
+	log->allocateStandardLib([](std::vector<string> args) {
+		for (int i = 0; i < args.size(); i++) {
+			std::cout << endl;
+		}
+		});
+
 	scopeManager->addScope("log", log);
+	scopeManager->addScope("newLine", newLine);
 }
 
 int main() {
@@ -95,7 +104,7 @@ int main() {
 				// Function data -> instroctions -> tokens
 				auto variableData = new VariableData(variableName, type);
 				//currentScope->allocateVariable(variableName, variableData);
-;				argumentsIndex += 2;
+				;				argumentsIndex += 2;
 			}
 
 		}

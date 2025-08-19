@@ -74,6 +74,7 @@ void Interpreter::execute() {
 						if (i == tokens.size() - 1) args[0] += " ";
 						if (token[token.size() - 1] == '"') {
 							args[0] += (token.substr(0, token.size() - 1));
+							argIsString = false;
 						}
 						else {
 							args[0] += token;

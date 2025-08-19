@@ -1,8 +1,7 @@
 fn logNameAndAge (string name int age) {
-  log("Name issssss:");
-  log(name);
-  log("Ageisssssss:");
-  log(age);
+  log("Name issssss:" name);
+  newLine();
+  log("Ageisssssss:" age);
 }
 
 fn main () {
