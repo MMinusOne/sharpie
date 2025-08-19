@@ -17,6 +17,7 @@ private:
 public:
 	Scope(std::string identifier);
 	std::string get_identifier();
+	void setParent(Scope* parent);
 	void allocateVariable(string identifier, VariableData* variableData);
 	void addInstructions(std::vector<string> instructions);
 	VariableData* getVariable(string identifier);

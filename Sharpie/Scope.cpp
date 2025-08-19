@@ -38,3 +38,7 @@ void Scope::executeStandardLib(const std::vector<string>& data) {
 	if (standardLibInstructions == nullptr) return;
 	standardLibInstructions(data);
 }
+
+void Scope::setParent(Scope* parent) {
+	this->variableStoreHeap.insert(parent->variableStoreHeap.begin(), parent->variableStoreHeap.end());
+}

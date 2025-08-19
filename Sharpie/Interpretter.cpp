@@ -43,8 +43,6 @@ void Interpreter::execute() {
 
 		auto opcode = *it;
 
-
-
 		currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 
 		if (opcode == "var") {
@@ -52,6 +50,7 @@ void Interpreter::execute() {
 		}
 		else if (opcode == "do_if") {
 			auto currentScope = new Scope("0x" + currentScopes.size());
+			currentScope->setParent(currentScopes[currentScopes.size() - 1]);
 			currentScopes.push_back(currentScope);
 		}
 		else if (opcode == "if_end") {
@@ -114,6 +113,7 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 				}
 				else {
 					args[0] += (token.substr(1, token.size() - 1));
+					args[0] += " ";
 				}
 				argIsString = true;
 			}

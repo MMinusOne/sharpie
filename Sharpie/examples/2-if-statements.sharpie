@@ -10,10 +10,9 @@ fn logAdultNameAndAge(string name int age) {
 fn logMinorNameAndAge (string name int age) {
   log("I am a minor);
   newLine();
-  log("My name is");
+  log("My name is" name);
   newLine();
-  log("My age is");
-  log(age);
+  log("My age is" age);
 }
 
 fn main () {

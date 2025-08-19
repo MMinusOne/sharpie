@@ -87,7 +87,7 @@ int main() {
 			bool started = true;
 			while (tokens.size() - 1 >= argumentsIndex) {
 				auto token = tokens[argumentsIndex];
-				if (token.empty()) {
+				if (token.empty() || token == "{") {
 					if (!started) {
 						break;
 					}
@@ -132,5 +132,5 @@ int main() {
  * Get main function
  * Go thru the inner-code
  *  ./examples/1-logging.sharpie
- *  ./examples/1-if-statements.sharpie
+ *  ./examples/2-if-statements.sharpie
  */
