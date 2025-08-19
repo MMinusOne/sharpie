@@ -8,5 +8,5 @@ fn logNameAndAge (string name int age) {
 fn main () {
   var string name = "Michael";
   var int age = 16;
-  logNameAndAge(name, age);
+  logNameAndAge(name age);
 }

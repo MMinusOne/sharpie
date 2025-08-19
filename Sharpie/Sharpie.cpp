@@ -31,8 +31,10 @@ void initializeStandardLib() {
 	auto scopeManager = ScopeManager::getInstance();
 
 	Scope* log = new Scope("log");
-	log->allocateStandardLib([]() {
-		cout << "Testing";
+	log->allocateStandardLib([](std::vector<string> args) {
+		for (int i = 0; i < args.size(); i++) {
+			std::cout << args[i];
+		}
 	});
 	scopeManager->addScope("log", log);
 }
@@ -57,7 +59,7 @@ int main() {
 	std::vector<std::vector<string>> instructions;
 
 	for (const auto& line : lines) {
-		auto splitters = std::vector<string>{ " ", "(", ")" };
+		auto splitters = std::vector<string>{ " ", "(", ")", ";" };
 		std::vector<string> tokens = split(line, splitters);
 
 		if (tokens.empty()) continue;
@@ -92,8 +94,8 @@ int main() {
 				string variableName = tokens[argumentsIndex + 1];
 				// Function data -> instroctions -> tokens
 				auto variableData = new VariableData(variableName, type);
-				currentScope->allocateVariable(variableName, variableData);
-				argumentsIndex += 2;
+				//currentScope->allocateVariable(variableName, variableData);
+;				argumentsIndex += 2;
 			}
 
 		}

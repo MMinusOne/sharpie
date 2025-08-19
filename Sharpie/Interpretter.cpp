@@ -6,6 +6,7 @@
 #include "typeConverter.h"
 #include "Scope.h"
 #include "ScopeManager.h"
+#include "Split.h"
 
 Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions) {
 	this->instructions = instructions;
@@ -14,6 +15,18 @@ Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions) {
 Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions, Scope* scope) {
 	this->instructions = instructions;
 	this->scope = scope;
+}
+
+Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions, Scope* scope, string refererrerFnName) {
+	this->instructions = instructions;
+	this->scope = scope;
+	this->referrerFnName = refererrerFnName;
+}
+
+Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions, Scope* scope, std::vector<string>& args) {
+	this->instructions = instructions;
+	this->scope = scope;
+	this->args = args;
 }
 
 void Interpreter::execute() {
@@ -41,11 +54,30 @@ void Interpreter::execute() {
 			tokens = trimTokens(tokens);
 			string fnName = tokens[0];
 			auto fn = scopeManager->getGlobal(fnName);
+
+			if (args.empty()) {
+				for (int i = 1; i < tokens.size(); i++) {
+					auto token = tokens[i];
+
+					if (token[0] == '"') {
+						args.push_back(token);
+					}
+					else {
+						VariableData* varData = currentScope->getVariable(token);
+						if (varData == nullptr) {
+							args.push_back("null");
+						};
+						args.push_back(varData->getValue());
+					}
+				}
+			}
+
 			if (fn->getIsStandardLib()) {
-				fn->executeStandardLib();
+				fn->executeStandardLib(args);
+				args.clear();
 			}
 			else {
-				auto fnInterpreter = new Interpreter(fn->getInstructions());
+				auto fnInterpreter = new Interpreter(fn->getInstructions(), currentScope);
 				fnInterpreter->execute();
 			}
 		}
