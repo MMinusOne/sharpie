@@ -102,13 +102,13 @@ int main() {
 				// Function data -> instroctions -> tokens
 				auto variableData = new VariableData(variableName, type);
 				//currentScope->allocateVariable(variableName, variableData);
-				;				argumentsIndex += 2;
+				argumentsIndex += 2;
 			}
 
 		}
 		else if (opcode == "}") {
 			auto identifier = currentScope->get_identifier();
-			currentScope->allocateInstructions(identifier, instructions);
+			currentScope->allocateInstructions(instructions);
 			scopeManager->addScope(identifier, currentScope);
 
 			if (identifier == "main") {
@@ -132,4 +132,5 @@ int main() {
  * Get main function
  * Go thru the inner-code
  *  ./examples/1-logging.sharpie
+ *  ./examples/1-if-statements.sharpie
  */

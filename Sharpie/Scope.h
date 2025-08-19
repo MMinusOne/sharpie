@@ -18,8 +18,9 @@ public:
 	Scope(std::string identifier);
 	std::string get_identifier();
 	void allocateVariable(string identifier, VariableData* variableData);
+	void addInstructions(std::vector<string> instructions);
 	VariableData* getVariable(string identifier);
-	void allocateInstructions(string identifier, std::vector<std::vector<std::string>> instructions);
+	void allocateInstructions(std::vector<std::vector<std::string>> instructions);
 	void allocateStandardLib(std::function<void(const std::vector<string>&)>);
 	void executeStandardLib(const std::vector<string>& data);
 	std::vector<std::vector<string>> getInstructions();

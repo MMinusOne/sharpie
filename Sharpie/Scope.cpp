@@ -17,8 +17,12 @@ VariableData* Scope::getVariable(string identifier) {
 	return variableStoreHeap[identifier];
 }
 
-void Scope::allocateInstructions(string identifier, std::vector<std::vector<string>> instructions) {
-	this->instructions= instructions;
+void Scope::allocateInstructions(std::vector<std::vector<std::string>> instructions) {
+	this->instructions = instructions;
+}
+
+void Scope::addInstructions(std::vector<string> instructions) {
+	this->instructions.push_back(instructions);	
 }
 
 std::vector<std::vector<string>> Scope::getInstructions() {

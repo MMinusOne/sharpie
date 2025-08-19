@@ -18,5 +18,6 @@ public:
 	void execute();
 	void handleVariable(std::vector<string>& tokens, Scope* currentScope);
 	void handleFunction(std::vector<string>& tokens, Scope* currentScope);
+	void handleIfStatement(std::vector<string>& tokens, Scope* currentScope);
 };
 

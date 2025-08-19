@@ -31,7 +31,8 @@ Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions, Sco
 
 void Interpreter::execute() {
 	auto scopeManager = ScopeManager::getInstance();
-	Scope* currentScope = this->scope;
+	std::vector<Scope*> currentScopes = { this->scope };
+
 	for (auto& tokens : instructions) {
 		if (tokens.empty()) continue;
 		auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
@@ -42,14 +43,23 @@ void Interpreter::execute() {
 
 		auto opcode = *it;
 
+
+
+		currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
+
 		if (opcode == "var") {
-			this->handleVariable(tokens, currentScope);
+			this->handleVariable(tokens, currentScopes[currentScopes.size() - 1]);
 		}
-		else if (opcode == "if") {
-			//this->handleIfStatement(tokens, currentScope);
+		else if (opcode == "do_if") {
+			auto currentScope = new Scope("0x" + currentScopes.size());
+			currentScopes.push_back(currentScope);
+		}
+		else if (opcode == "if_end") {
+			this->handleIfStatement(tokens, currentScopes[currentScopes.size() - 1]);
+			currentScopes.pop_back();
 		}
 		else {
-			this->handleFunction(tokens, currentScope);
+			this->handleFunction(tokens, currentScopes[currentScopes.size() - 1]);
 		}
 	}
 }
@@ -125,4 +135,8 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 		auto fnInterpreter = new Interpreter(fn->getInstructions(), currentScope);
 		fnInterpreter->execute();
 	}
+}
+
+void Interpreter::handleIfStatement(std::vector<string>& tokens, Scope* currentScope) {
+
 }
