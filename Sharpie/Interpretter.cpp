@@ -43,71 +43,86 @@ void Interpreter::execute() {
 		auto opcode = *it;
 
 		if (opcode == "var") {
-			tokens = trimTokens(tokens);
-			VariableTypes type = convertToType(tokens[1]);
-			string name = tokens[2];
-			string value;
-
-			for (int i = 4; i < tokens.size(); i++) {
-				auto token = tokens[i];
-				if (i != 4) value += " ";
-				value += token;
-				if (token[token.size() - 2] == '"') {
-					break;
-				}
-			}
-
-			VariableData* variable = new VariableData(name, type, value);
-			currentScope->allocateVariable(name, variable);
+			this->handleVariable(tokens, currentScope);
+		}
+		else if (opcode == "if") {
+			//this->handleIfStatement(tokens, currentScope);
 		}
 		else {
-			tokens = trimTokens(tokens);
-			string fnName = tokens[0];
-			auto fn = scopeManager->getGlobal(fnName);
+			this->handleFunction(tokens, currentScope);
+		}
+	}
+}
 
-			if (args.empty() && !tokens.empty()) {
-				auto argIsString = false;
-				for (int i = 1; i < tokens.size(); i++) {
-					string token = tokens[i];
+void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScope) {
+	tokens = trimTokens(tokens);
+	VariableTypes type = convertToType(tokens[1]);
+	string name = tokens[2];
+	string value;
 
-					if (argIsString) {
-						if (i == tokens.size() - 1) args[0] += " ";
-						if (token[token.size() - 1] == '"') {
-							args[0] += (token.substr(0, token.size() - 1));
-							argIsString = false;
-						}
-						else {
-							args[0] += token;
-						}
-					}
-					else if (token[0] == '"') {
-						if (args.size() == 0) args.push_back("");
-						if (token[token.size() - 1] == '"') {
-							args[0] += (token.substr(1, token.size() - 2));
-						}
-						else {
-							args[0] += (token.substr(1, token.size() - 1));
-						}
-						argIsString = true;
-					}
-					else if (!argIsString) {
-						VariableData* varData = currentScope->getVariable(token);
-						if (varData == nullptr) {
-							args.push_back("null");
-						};
-						args.push_back(varData->getValue());
-					}
+	for (int i = 4; i < tokens.size(); i++) {
+		auto token = tokens[i];
+		if (i != 4) value += " ";
+		value += token;
+		if (token[token.size() - 2] == '"') {
+			break;
+		}
+	}
+
+	VariableData* variable = new VariableData(name, type, value);
+	if (currentScope != nullptr) currentScope->allocateVariable(name, variable);
+}
+
+void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScope) {
+	auto scopeManager = ScopeManager::getInstance();
+
+	tokens = trimTokens(tokens);
+	string fnName = tokens[0];
+	auto fn = scopeManager->getGlobal(fnName);
+
+	if (args.empty() && !tokens.empty()) {
+		auto argIsString = false;
+		for (int i = 1; i < tokens.size(); i++) {
+			string token = tokens[i];
+
+			if (argIsString) {
+				if (i == tokens.size() - 1) args[0] += " ";
+				if (token[token.size() - 1] == '"') {
+					args[0] += " ";
+					args[0] += (token.substr(0, token.size() - 1));
+					argIsString = false;
+				}
+				else {
+					args[0] += token;
+					args[0] += " ";
 				}
 			}
-
-			if (fn->getIsStandardLib()) {
-				fn->executeStandardLib(args);
-				args.clear();
+			else if (token[0] == '"') {
+				if (args.size() == 0) args.push_back("");
+				if (token[token.size() - 1] == '"') {
+					args[0] += (token.substr(1, token.size() - 2));
+				}
+				else {
+					args[0] += (token.substr(1, token.size() - 1));
+				}
+				argIsString = true;
 			}
-			else {
-				auto fnInterpreter = new Interpreter(fn->getInstructions(), currentScope);
-				fnInterpreter->execute();
+			else if (!argIsString) {
+				VariableData* varData = currentScope->getVariable(token);
+				if (varData == nullptr) {
+					args.push_back("null");
+				};
+				args.push_back(varData->getValue());
 			}
 		}
+	}
+
+	if (fn->getIsStandardLib()) {
+		fn->executeStandardLib(args);
+		args.clear();
+	}
+	else {
+		auto fnInterpreter = new Interpreter(fn->getInstructions(), currentScope);
+		fnInterpreter->execute();
 	}
 }

@@ -1,0 +1,28 @@
+fn logAdultNameAndAge(string name int age) { 
+  log("I am an adult);
+  newLine();
+  log("My name is");
+  newLine();
+  log("My age is");
+  log(age);
+}
+
+fn logMinorNameAndAge (string name int age) {
+  log("I am a minor);
+  newLine();
+  log("My name is");
+  newLine();
+  log("My age is");
+  log(age);
+}
+
+fn main () {
+  var string name = "Michael Salloum";
+  var int age = 29;
+
+  if(age < 18) {
+    logMinorNameAndAge(name age);
+  }else {
+    logAdultNameAndAge(name age);
+  }
+}

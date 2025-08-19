@@ -14,6 +14,9 @@ public:
 	Interpreter(std::vector<std::vector<std::string>> instructions, Scope* scope);
 	Interpreter(std::vector<std::vector<std::string>> instructions, Scope* scope, string refererrerFnName);
 	Interpreter(std::vector<std::vector<std::string>> instructions, Scope* scope, std::vector<string>& args);
+
 	void execute();
+	void handleVariable(std::vector<string>& tokens, Scope* currentScope);
+	void handleFunction(std::vector<string>& tokens, Scope* currentScope);
 };
 

@@ -1,5 +1,5 @@
 fn logNameAndAge (string name int age) {
-  log("Name  issssss:" name);
+  log("My name is:" name);
   newLine();
   log("Ageisssssss:" age);
 }
