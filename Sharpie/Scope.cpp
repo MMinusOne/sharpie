@@ -17,6 +17,18 @@ VariableData* Scope::getVariable(string identifier) {
 	return variableStoreHeap[identifier];
 }
 
+void Scope::block() {
+	blocked = true;
+}
+
+void Scope::unblock() {
+	blocked = false;
+}
+
+bool Scope::isBlocked() {
+	return blocked;
+}
+
 void Scope::allocateInstructions(std::vector<std::vector<std::string>> instructions) {
 	this->instructions = instructions;
 }
@@ -30,11 +42,13 @@ std::vector<std::vector<string>> Scope::getInstructions() {
 }
 
 void Scope::allocateStandardLib(std::function<void(const std::vector<string>&)> execution) {
+	if (blocked) return;
 	standardLibInstructions = execution;
 	isStandardLib = true;
 }
 
 void Scope::executeStandardLib(const std::vector<string>& data) {
+	if (blocked) return;
 	if (standardLibInstructions == nullptr) return;
 	standardLibInstructions(data);
 }

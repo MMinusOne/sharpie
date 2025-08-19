@@ -7,6 +7,7 @@
 #include "Scope.h"
 #include "ScopeManager.h"
 #include "Split.h"
+#include <iostream>
 
 Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions) {
 	this->instructions = instructions;
@@ -49,15 +50,21 @@ void Interpreter::execute() {
 			this->handleVariable(tokens, currentScopes[currentScopes.size() - 1]);
 		}
 		else if (opcode == "do_if") {
-			auto currentScope = new Scope("0x" + currentScopes.size());
-			currentScope->setParent(currentScopes[currentScopes.size() - 1]);
-			currentScopes.push_back(currentScope);
+			tokens = trimTokens(tokens);
+			std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
+			bool conditionState = this->handleCondition(relevantTokens, currentScopes[currentScopes.size() - 1]);
+			auto newScope = new Scope("0x" + currentScopes.size());
+			newScope->setParent(currentScopes[currentScopes.size() - 1]);
+			currentScopes.push_back(newScope);
+			if(!conditionState) newScope->block();
 		}
 		else if (opcode == "if_end") {
-			this->handleIfStatement(tokens, currentScopes[currentScopes.size() - 1]);
-			currentScopes.pop_back();
+			if (!currentScopes[currentScopes.size() - 1]->isBlocked()) {
+				currentScopes.pop_back();
+			}
 		}
 		else {
+			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			this->handleFunction(tokens, currentScopes[currentScopes.size() - 1]);
 		}
 	}
@@ -90,41 +97,8 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 	auto fn = scopeManager->getGlobal(fnName);
 
 	if (args.empty() && !tokens.empty()) {
-		auto argIsString = false;
-		for (int i = 1; i < tokens.size(); i++) {
-			string token = tokens[i];
-
-			if (argIsString) {
-				if (i == tokens.size() - 1) args[0] += " ";
-				if (token[token.size() - 1] == '"') {
-					args[0] += " ";
-					args[0] += (token.substr(0, token.size() - 1));
-					argIsString = false;
-				}
-				else {
-					args[0] += token;
-					args[0] += " ";
-				}
-			}
-			else if (token[0] == '"') {
-				if (args.size() == 0) args.push_back("");
-				if (token[token.size() - 1] == '"') {
-					args[0] += (token.substr(1, token.size() - 2));
-				}
-				else {
-					args[0] += (token.substr(1, token.size() - 1));
-					args[0] += " ";
-				}
-				argIsString = true;
-			}
-			else if (!argIsString) {
-				VariableData* varData = currentScope->getVariable(token);
-				if (varData == nullptr) {
-					args.push_back("null");
-				};
-				args.push_back(varData->getValue());
-			}
-		}
+		std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
+		args = this->getStringsOrVariableValues(relevantTokens, currentScope);
 	}
 
 	if (fn->getIsStandardLib()) {
@@ -137,6 +111,102 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 	}
 }
 
-void Interpreter::handleIfStatement(std::vector<string>& tokens, Scope* currentScope) {
+bool Interpreter::handleCondition(std::vector<string>& tokens, Scope* currentScope) {
+	std::vector<std::vector<string>> conditions = { {} };
+	bool isValid = true;
 
+	for (string& token : tokens) {
+		string AND_OPERATOR = "&&";
+		if (token == AND_OPERATOR) {
+			conditions.push_back({});
+		}
+
+		conditions[conditions.size() - 1].push_back(token);
+	}
+
+	for (auto& condition : conditions) {
+		auto leftSide = this->getStringOrVariableValue(tokens[0], currentScope);
+		auto op = condition[1];
+		auto rightSide = this->getStringOrVariableValue(tokens[2], currentScope);
+
+		if (op == ">") {
+			isValid = std::stoi(leftSide) > std::stoi(rightSide);
+
+		}
+		else if (op == "<") {
+			isValid = std::stoi(leftSide) < std::stoi(rightSide);
+		}
+		else if (op == "<") {
+
+		}
+		else if (op == "==") {
+
+		}
+	}
+
+
+	return isValid;
+}
+
+VariableData* Interpreter::getVariable(string name, Scope* currentScope) {
+	auto variableData = currentScope->getVariable(name);
+	if (variableData == nullptr) {
+		return nullptr;
+	}
+
+	return variableData;
+}
+
+std::string Interpreter::getStringOrVariableValue(string& code, Scope* currentScope) {
+	if (code[0] == '"') {
+		return code.substr(1, code.size() - 1);
+	}
+
+	auto variableData = currentScope->getVariable(code);
+	if (variableData == nullptr) {
+		return code;
+	}
+
+	return variableData->getValue();
+}
+
+std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<string>& tokens, Scope* currentScope) {
+	bool argIsString = false;
+	std::vector<std::string> args;
+	for (int i = 0; i < tokens.size(); i++) {
+		string token = tokens[i];
+
+		if (argIsString) {
+			if (i == tokens.size() - 1) args[0] += " ";
+			if (token[token.size() - 1] == '"') {
+				args[0] += " ";
+				args[0] += (token.substr(0, token.size() - 1));
+				argIsString = false;
+			}
+			else {
+				args[0] += token;
+				args[0] += " ";
+			}
+		}
+		else if (token[0] == '"') {
+			if (args.size() == 0) args.push_back("");
+			if (token[token.size() - 1] == '"') {
+				args[0] += (token.substr(1, token.size() - 2));
+			}
+			else {
+				args[0] += (token.substr(1, token.size() - 1));
+				args[0] += " ";
+			}
+			argIsString = true;
+		}
+		else if (!argIsString) {
+			VariableData* varData = currentScope->getVariable(token);
+			if (varData == nullptr) {
+				args.push_back("null");
+			};
+			args.push_back(varData->getValue());
+		}
+	}
+
+	return args;
 }

@@ -14,6 +14,7 @@ private:
 	std::function<void(const std::vector<string>&)> standardLibInstructions = nullptr;
 	bool isStandardLib = false;
 	std::string identifier;
+	bool blocked;
 public:
 	Scope(std::string identifier);
 	std::string get_identifier();
@@ -25,6 +26,9 @@ public:
 	void allocateStandardLib(std::function<void(const std::vector<string>&)>);
 	void executeStandardLib(const std::vector<string>& data);
 	std::vector<std::vector<string>> getInstructions();
+	void block();
+	void unblock();
+	bool isBlocked();
 	inline bool getIsStandardLib() { return isStandardLib; }
 };
 
