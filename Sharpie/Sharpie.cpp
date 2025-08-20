@@ -27,6 +27,26 @@ string getMainSharpieExecutionPath() {
 	return executionPath;
 }
 
+bool isValidVariableName(const string& name) {
+	if (name.empty() || !isalpha(name[0])) return false;
+	for (char c : name) {
+		if (!isalnum(c) && c != '_') return false;
+	}
+	return true;
+}
+
+string readFile(const string& filePath) {
+	ifstream file(filePath);
+	if (!file.is_open()) {
+		cout << "Error: Could not open file " << filePath << endl;
+		return "";
+	}
+	stringstream buffer;
+	buffer << file.rdbuf();
+	file.close();
+	return buffer.str();
+}
+
 void initializeStandardLib() {
 	auto scopeManager = ScopeManager::getInstance();
 
@@ -42,28 +62,110 @@ void initializeStandardLib() {
 		std::cout << "\n";
 		});
 
+	Scope* import = new Scope("@import");
+	
+	import->allocateStandardLib([](std::vector<string> args) {
+	vector<Scope> scopes;
+	vector<string> scopeNames;
+	string file;
+
+	bool finishedImportations = false;
+	for (auto arg : args) {
+		if (finishedImportations) {
+			file = arg.substr(1, arg.size() - 2);
+			string importContents = readFile("./examples/" + file);
+
+			auto lexer = Lexer(importContents);
+			auto lines = lexer.getLines();
+
+			Scope* currentScope = nullptr;
+
+			for (const auto& line : lines) {
+				auto splitters = std::vector<string>{ " ", "(", ")", ";" };
+				std::vector<string> tokens = split(line, splitters);
+
+				if (tokens.empty()) continue;
+				auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
+					return !t.empty() && t != " ";
+					});
+
+				if (it == tokens.end()) continue;
+
+				auto opcode = *it;
+
+				if (opcode == "fn") {
+					if (currentScope != nullptr) continue;
+					tokens = trimTokens(tokens);
+					auto fnName = tokens[1];
+					currentScope = new Scope(fnName);
+
+					int argumentsIndex = 2;
+					bool started = true;
+					while (tokens.size() - 1 >= argumentsIndex) {
+						auto token = tokens[argumentsIndex];
+						if (token.empty() || token == "{") {
+							if (!started) {
+								break;
+							}
+							argumentsIndex++;
+							started = false;
+							continue;
+						}
+
+						VariableTypes type = convertToType(token);
+
+						string variableName = tokens[argumentsIndex + 1];
+						if (!isValidVariableName(variableName)) {
+							argumentsIndex += 2;
+							continue;
+						}
+						auto variableData = new VariableData(variableName, type, "null");
+						currentScope->allocateVariable(variableName, variableData);
+						argumentsIndex += 2;
+					}
+
+				}
+				else if (opcode == "}") {
+					auto identifier = currentScope->get_identifier();
+					ScopeManager::getInstance()->addScope(identifier, currentScope);
+
+					currentScope = nullptr;
+				}
+				else {
+					currentScope->addInstructions(tokens);
+				}
+			}
+
+		}
+		else {
+			if (arg[0] == '[' && arg[arg.size() - 1] == ']') {
+				arg = arg.substr(1, arg.size() - 2);
+			}
+			else if (arg[0] == '[') {
+				arg = arg.substr(1);
+			}
+			else if (arg[arg.size() - 1] == ']') {
+				arg = arg.substr(0, arg.size() - 1);
+			}
+			scopeNames.push_back(arg);
+		}
+
+		if (arg == "from") {
+			finishedImportations = true;
+			continue;
+		}
+	}
+	});
+
+
 	scopeManager->addScope("log", log);
 	scopeManager->addScope("newLine", newLine);
+	scopeManager->addScope("@import", import);
 }
 
-int main() {
+void handleTopLevel(vector<string> lines) {
 	auto scopeManager = ScopeManager::getInstance();
-	initializeStandardLib();
-
-	string sharpiePath = getMainSharpieExecutionPath();
-	ifstream file(sharpiePath);
-	stringstream mainBuffer;
-	mainBuffer << file.rdbuf();
-
-	string mainCode;
-	mainCode = mainBuffer.str();
-
-	auto lexer = Lexer(mainCode);
-	auto lines = lexer.getLines();
-
 	Scope* currentScope = nullptr;
-
-	std::vector<std::vector<string>> instructions;
 
 	for (const auto& line : lines) {
 		auto splitters = std::vector<string>{ " ", "(", ")", ";" };
@@ -72,7 +174,7 @@ int main() {
 		if (tokens.empty()) continue;
 		auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
 			return !t.empty() && t != " ";
-		});
+			});
 
 		if (it == tokens.end()) continue;
 
@@ -80,6 +182,7 @@ int main() {
 
 		if (opcode == "fn") {
 			if (currentScope != nullptr) continue;
+			tokens = trimTokens(tokens);
 			auto fnName = tokens[1];
 			currentScope = new Scope(fnName);
 
@@ -99,29 +202,47 @@ int main() {
 				VariableTypes type = convertToType(token);
 
 				string variableName = tokens[argumentsIndex + 1];
-				// Function data -> instroctions -> tokens
-				auto variableData = new VariableData(variableName, type);
-				//currentScope->allocateVariable(variableName, variableData);
+				if (!isValidVariableName(variableName)) {
+					argumentsIndex += 2;
+					continue;
+				}
+				auto variableData = new VariableData(variableName, type, "null");
+				currentScope->allocateVariable(variableName, variableData);
 				argumentsIndex += 2;
 			}
 
 		}
 		else if (opcode == "}") {
 			auto identifier = currentScope->get_identifier();
-			currentScope->allocateInstructions(instructions);
 			scopeManager->addScope(identifier, currentScope);
 
 			if (identifier == "main") {
-				auto interpreter = new Interpreter(instructions, currentScope);
+				auto interpreter = new Interpreter(currentScope->getInstructions(), currentScope);
 				interpreter->execute();
 			}
-			instructions.clear();
 			currentScope = nullptr;
 		}
+		else if (opcode[0] == '@') {
+			auto macro = scopeManager->getGlobal(opcode);
+			std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
+			macro->executeStandardLib(relevantTokens);
+		}
 		else {
-			instructions.push_back(tokens);
+			currentScope->addInstructions(tokens);
 		}
 	}
+}
+
+int main() {
+	initializeStandardLib();
+
+	string sharpiePath = getMainSharpieExecutionPath();
+	string mainCode = readFile(getMainSharpieExecutionPath());
+
+	auto lexer = Lexer(mainCode);
+	auto lines = lexer.getLines();
+
+	handleTopLevel(lines);
 
 	return 0;
 }
@@ -135,4 +256,5 @@ int main() {
  *  ./examples/1-logging.sharpie
  *  ./examples/2-if-statements.sharpie
  *  ./examples/3-loops.sharpie
+ *  ./examples/4-importing.sharpie
  */

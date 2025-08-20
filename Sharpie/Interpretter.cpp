@@ -34,6 +34,16 @@ void Interpreter::execute() {
 	auto scopeManager = ScopeManager::getInstance();
 	std::vector<Scope*> currentScopes = { this->scope };
 
+	if (!args.empty()) {
+		auto scope = currentScopes[currentScopes.size() - 1];
+		int argI = 0;
+		for (const auto& variable : scope->getVariablesHeap()) {
+			if (variable.second == nullptr) continue;
+			variable.second->setValue(args[argI]);
+			argI++;
+		}
+	}
+
 	for (auto& tokens : instructions) {
 		if (tokens.empty()) continue;
 		auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
@@ -44,7 +54,7 @@ void Interpreter::execute() {
 
 		auto opcode = *it;
 
-		currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
+		if (currentScopes.size() > 1) currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
 
 		if (opcode == "var") {
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
@@ -80,7 +90,7 @@ void Interpreter::execute() {
 
 			latestScope->allocateVariable("index", indexVariable);
 
-			auto forLoopInterpreter = new Interpreter(forLoopInstructions, latestScope);
+			auto forLoopInterpreter = new Interpreter(forLoopInstructions, latestScope, "for");
 
 			for (int i = start; i < end; i++) {
 				VariableData* indexVariable = new VariableData(variableName, VariableTypes::Int, std::to_string(i));
@@ -92,7 +102,7 @@ void Interpreter::execute() {
 			currentScopes.pop_back();
 		}
 		else if (opcode == "do_if") {
-			auto lastScope = findScopeDepth(currentScopes[currentScopes.size()-1]->getDepth(), currentScopes);
+			auto lastScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth(), currentScopes);
 			if (lastScope->isBlocked()) continue;
 			tokens = trimTokens(tokens);
 			auto newScope = new Scope("if");
@@ -102,7 +112,7 @@ void Interpreter::execute() {
 			currentScopes.push_back(newScope);
 		}
 		else if (opcode == "if_end") {
-			auto parentScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth()-1, currentScopes);
+			auto parentScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth() - 1, currentScopes);
 			auto lastScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth(), currentScopes);
 
 			if (lastScope->isBlocked() && lastScope->get_identifier() != "if") continue;
@@ -128,8 +138,9 @@ void Interpreter::execute() {
 			if (ifScope->get_identifier() == "if") currentScopes.pop_back();
 		}
 		else {
-			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
-			this->handleFunction(tokens, currentScopes[currentScopes.size() - 1]);
+			auto parentScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth(), currentScopes);
+			if (parentScope->isBlocked()) continue;
+			this->handleFunction(tokens, parentScope);
 		}
 	}
 }
@@ -157,22 +168,25 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 
 void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScope) {
 	auto scopeManager = ScopeManager::getInstance();
+	std::vector<std::string> fnArgs;
 
 	tokens = trimTokens(tokens);
 	string fnName = tokens[0];
 	auto fn = scopeManager->getGlobal(fnName);
 
-	if (args.empty() && !tokens.empty()) {
+	if (!tokens.empty()) {
 		std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
-		args = this->getStringsOrVariableValues(relevantTokens, currentScope);
+		fnArgs = this->getStringsOrVariableValues(relevantTokens, currentScope);
 	}
 
 	if (fn->getIsStandardLib()) {
-		fn->executeStandardLib(args);
-		args.clear();
+		if (fnName[0] != '@') {
+			fn->executeStandardLib(fnArgs);
+			fnArgs.clear();
+		}
 	}
 	else {
-		auto fnInterpreter = new Interpreter(fn->getInstructions(), currentScope);
+		auto fnInterpreter = new Interpreter(fn->getInstructions(), fn, fnArgs);
 		fnInterpreter->execute();
 	}
 }
@@ -238,12 +252,11 @@ std::string Interpreter::getStringOrVariableValue(string& code, Scope* currentSc
 
 std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<string>& tokens, Scope* currentScope) {
 	bool argIsString = false;
-	std::vector<std::string> args = { {} };
+	std::vector<std::string> args = {  };
 	for (int i = 0; i < tokens.size(); i++) {
 		string token = tokens[i];
 
 		if (argIsString) {
-			if (i == tokens.size() - 1) args[0] += " ";
 			if (token[token.size() - 1] == '"') {
 				args.push_back(token.substr(0, token.size() - 1));
 				argIsString = false;
@@ -253,9 +266,8 @@ std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<str
 			}
 		}
 		else if (token[0] == '"') {
-			if (args.size() == 0) args.push_back("");
 			if (token[token.size() - 1] == '"') {
-				args[0] += (token.substr(1, token.size() - 2));
+				args.push_back(token.substr(1, token.size() - 2));
 				argIsString = false;
 				continue;
 			}
@@ -268,6 +280,7 @@ std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<str
 			VariableData* varData = currentScope->getVariable(token);
 			if (varData == nullptr) {
 				args.push_back("null");
+				continue;
 			};
 
 			args.push_back(varData->getValue());
@@ -287,11 +300,11 @@ Scope* Interpreter::findLatestScope(const std::string& identifier, std::vector<S
 }
 
 Scope* Interpreter::findScopeDepth(int depth, std::vector<Scope*>& currentScopes) {
-	for(auto& currentScope: currentScopes) {
+	for (auto& currentScope : currentScopes) {
 		if (currentScope->getDepth() == depth) {
 			return currentScope;
 			break;
-	  }
+		}
 	}
 
 	return currentScopes[0];

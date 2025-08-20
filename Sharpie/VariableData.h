@@ -16,5 +16,7 @@ public:
 	inline string getName() { return name; }
 	inline VariableTypes getType() { return type; }
 	inline string getValue() { return value; }
+
+	inline void setValue(string value) { this->value = value; }
 };
 

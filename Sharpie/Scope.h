@@ -32,5 +32,6 @@ public:
 	bool isBlocked();
 	inline int getDepth() { return depth; }
 	inline bool getIsStandardLib() { return isStandardLib; }
+	inline std::unordered_map<std::string, VariableData*>& getVariablesHeap() { return variableStoreHeap; }
 };
 
