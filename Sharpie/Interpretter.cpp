@@ -8,6 +8,26 @@
 #include "ScopeManager.h"
 #include "Split.h"
 #include <iostream>
+#include "MicroInterpreter.h"
+
+/**
+	MAKE MICRO INTERPRETER THAT CAN HANDLE:
+	"Michael"
+	"Michael" lastName
+	lastName
+
+	arithmatic:
+	2 + 5
+	5 - 2
+	a * 2
+	8 * b
+	operators:
+	a > b
+	a < b
+	a == b
+
+	"Michael" lastName "is" currentYear - dateOfBirth "years old and is he a male? " gender == "male"
+*/
 
 Interpreter::Interpreter(std::vector<std::vector<std::string>> instructions) {
 	this->instructions = instructions;
@@ -166,25 +186,28 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 	string name = tokens[2];
 	string value;
 
-	if (tokens[4] != "extract") {
-		vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
-		auto vecData = getStringsOrVariableValues(relevantTokens, currentScope);
+	//if (tokens[4] != "extract") {
+	//	vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
+	//	auto vecData = getStringsOrVariableValues(relevantTokens, currentScope);
 
-		for (auto& token : vecData) {
-			if (value.empty()) {
-				value = token;
-			}
-			else {
-				value += " " + token;
-			}
-		}
-	}
-	else {
-		vector<string> relevantTokens(tokens.begin() + 5, tokens.end());
-		this->handleFunction(relevantTokens, currentScope);
-		value = ScopeManager::getInstance()->getGlobal(tokens[5])->getScopeReturnData();
-	}
-
+	//	for (auto& token : vecData) {
+	//		if (value.empty()) {
+	//			value = token;
+	//		}
+	//		else {
+	//			value += " " + token;
+	//		}
+	//	}
+	//}
+	//else {
+	//	vector<string> relevantTokens(tokens.begin() + 5, tokens.end());
+	//	this->handleFunction(relevantTokens, currentScope);
+	//	value = ScopeManager::getInstance()->getGlobal(tokens[5])->getScopeReturnData();
+	//}
+	
+	vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
+	auto microInterpreter = new MicroInterpreter(relevantTokens, currentScope);
+	value = microInterpreter->execute();
 
 	VariableData* variable = new VariableData(name, type, value);
 	if (currentScope != nullptr) currentScope->allocateVariable(name, variable);
@@ -251,6 +274,10 @@ bool Interpreter::handleCondition(std::vector<string>& tokens, Scope* currentSco
 
 	return isValid;
 }
+
+//int Interpreter::handleArithmetic(std::vector<string>&tokens, Scope* currentScope) {
+//	
+//}
 
 VariableData* Interpreter::getVariable(string name, Scope* currentScope) {
 	auto variableData = currentScope->getVariable(name);

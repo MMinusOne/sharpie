@@ -1,4 +1,4 @@
-fn loopToX(int to) { 
+fn loopTo(int to) { 
     for(index;1;to) 
         log("LOGGING TO" to "CURRENTLY AT" index);
         newLine();

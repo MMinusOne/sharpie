@@ -1,6 +1,6 @@
-@import [loopToX] from "./loopToX.sharpie";
+@import [loopTo] from "./loopTo.sharpie";
 
 fn main() { 
     var int to = 100;
-    loopToX(to);
+    loopTo(to);
 }

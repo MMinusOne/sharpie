@@ -19,6 +19,7 @@ public:
 	void handleVariable(std::vector<string>& tokens, Scope* currentScope);
 	void handleFunction(std::vector<string>& tokens, Scope* currentScope);
 	bool handleCondition(std::vector<string>& tokens, Scope* currentScope);
+	int handleArithmetic(std::vector<string>& tokens, Scope* currentScope);
 
 	std::string getStringOrVariableValue(std::string& code, Scope* currentScope);
 	std::vector<std::string> getStringsOrVariableValues(std::vector<string>& tokens, Scope* currentScope);

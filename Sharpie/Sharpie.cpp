@@ -257,4 +257,5 @@ int main() {
  *  ./examples/2-if-statements.sharpie
  *  ./examples/3-loops.sharpie
  *  ./examples/4-importing.sharpie
+ *  ./examples/5-fn-returns.sharpie
  */

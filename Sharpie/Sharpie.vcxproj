@@ -123,9 +123,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FunctionData.cpp" />
     <ClCompile Include="Interpretter.cpp" />
     <ClCompile Include="Lexer.cpp" />
+    <ClCompile Include="MicroInterpreter.cpp" />
     <ClCompile Include="Scope.cpp" />
     <ClCompile Include="ScopeManager.cpp" />
     <ClCompile Include="Sharpie.cpp" />
@@ -134,9 +134,9 @@
     <ClCompile Include="VariableData.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FunctionData.h" />
     <ClInclude Include="Interpretter.h" />
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="MicroInterpreter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scope.h" />
     <ClInclude Include="ScopeManager.h" />

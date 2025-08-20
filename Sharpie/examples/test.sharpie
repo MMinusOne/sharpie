@@ -1,12 +1,9 @@
 fn getName() { 
-    log("from getName()");
-    return "Michael";
+    return "Salloum";
 }
 
 fn main() { 
     newLine();
-    var string name = extract getName();
-    newLine();
+    var string name = "Michael :" < getName() >;
     log(name);
-    newLine();
 }

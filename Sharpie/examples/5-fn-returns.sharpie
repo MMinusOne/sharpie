@@ -1,15 +1,13 @@
-fn int add(int a int b) { 
-    return a + b;
-}
-
-fn int subtract(int a int b) { 
-    return a - b;
+fn makeSentence(int name int age) {
+    return name "is" age "years old";
 }
 
 fn main() { 
-    int addition = add(5 ,3);
-    int subtraction = subtract(10, 4);
+    var string name = "Michael";
 
-    log(addition);
-    log(subtraction);
+    for (index;1;17) 
+        var string sentence = extract makeSentence(name index);
+        log(sentence);
+        newLine();
+    for_end
 }
