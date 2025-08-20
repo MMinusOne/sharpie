@@ -15,6 +15,7 @@ private:
 	bool isStandardLib = false;
 	std::string identifier;
 	bool blocked;
+	int depth = 0;
 public:
 	Scope(std::string identifier);
 	std::string get_identifier();
@@ -29,6 +30,7 @@ public:
 	void block();
 	void unblock();
 	bool isBlocked();
+	inline int getDepth() { return depth; }
 	inline bool getIsStandardLib() { return isStandardLib; }
 };
 

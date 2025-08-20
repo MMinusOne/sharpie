@@ -11,7 +11,7 @@
 #include <algorithm>
 #include "TypeConverter.h"
 #include "Interpretter.h";
-#include "trimTokens.h"
+#include "trimTokens.h";
 
 using std::string;
 using std::cout;
@@ -72,7 +72,7 @@ int main() {
 		if (tokens.empty()) continue;
 		auto it = std::find_if(tokens.begin(), tokens.end(), [](const string& t) {
 			return !t.empty() && t != " ";
-			});
+		});
 
 		if (it == tokens.end()) continue;
 

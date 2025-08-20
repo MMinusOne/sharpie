@@ -45,41 +45,46 @@ void Interpreter::execute() {
 		auto opcode = *it;
 
 		currentScopes[currentScopes.size() - 1]->addInstructions(tokens);
+
 		if (opcode == "var") {
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
 			this->handleVariable(tokens, currentScopes[currentScopes.size() - 1]);
 		}
 		else if (opcode == "for") {
-			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
+			auto latestScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth() - 1, currentScopes);
+
+			latestScope->addInstructions(tokens);
+			if (latestScope->isBlocked()) continue;
 			tokens = trimTokens(tokens);
 			auto newScope = new Scope("for");
 			newScope->addInstructions(tokens);
-			newScope->setParent(currentScopes[currentScopes.size() - 1]);
+			newScope->setParent(latestScope);
 			newScope->block();
 			currentScopes.push_back(newScope);
 		}
 		else if (opcode == "for_end") {
-			currentScopes[currentScopes.size() - 1]->unblock();
-			vector<vector<string>> forLoopInstructions = currentScopes[currentScopes.size()-1]->getInstructions();
+			auto latestScope = this->findLatestScope("for", currentScopes);
+			latestScope->unblock();
+			vector<vector<string>> forLoopInstructions = latestScope->getInstructions();
 
 			auto forLoopDefinition = trimTokens(forLoopInstructions[0]);
 
 			string variableName = forLoopDefinition[1];
-			int start = std::stoi(getStringOrVariableValue(forLoopDefinition[2], currentScopes[currentScopes.size()-1]));
-			int end = std::stoi(getStringOrVariableValue(forLoopDefinition[3], currentScopes[currentScopes.size() - 1]));
+			int start = std::stoi(getStringOrVariableValue(forLoopDefinition[2], latestScope));
+			int end = std::stoi(getStringOrVariableValue(forLoopDefinition[3], latestScope));
 
 			VariableData* indexVariable = new VariableData(variableName, VariableTypes::Int, std::to_string(start));
 
 			forLoopInstructions.pop_back();
 			forLoopInstructions.erase(forLoopInstructions.begin());
 
-			currentScopes[currentScopes.size() - 1]->allocateVariable("index", indexVariable);
+			latestScope->allocateVariable("index", indexVariable);
 
-			auto forLoopInterpreter = new Interpreter(forLoopInstructions,  currentScopes[currentScopes.size()-1]);
+			auto forLoopInterpreter = new Interpreter(forLoopInstructions, latestScope);
 
 			for (int i = start; i < end; i++) {
 				VariableData* indexVariable = new VariableData(variableName, VariableTypes::Int, std::to_string(i));
-				currentScopes[currentScopes.size() - 1]->allocateVariable("index", indexVariable);
+				latestScope->allocateVariable("index", indexVariable);
 
 				forLoopInterpreter->execute();
 			}
@@ -87,7 +92,7 @@ void Interpreter::execute() {
 			currentScopes.pop_back();
 		}
 		else if (opcode == "do_if") {
-			auto lastScope = currentScopes[currentScopes.size() - 1];
+			auto lastScope = findScopeDepth(currentScopes[currentScopes.size()-1]->getDepth(), currentScopes);
 			if (lastScope->isBlocked()) continue;
 			tokens = trimTokens(tokens);
 			auto newScope = new Scope("if");
@@ -97,8 +102,11 @@ void Interpreter::execute() {
 			currentScopes.push_back(newScope);
 		}
 		else if (opcode == "if_end") {
-			if (currentScopes[currentScopes.size() - 2]->isBlocked()) continue;
-			auto lastScope = currentScopes[currentScopes.size() - 1];
+			auto parentScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth()-1, currentScopes);
+			auto lastScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth(), currentScopes);
+
+			if (lastScope->isBlocked() && lastScope->get_identifier() != "if") continue;
+			auto ifScope = currentScopes[currentScopes.size() - 1];
 
 			currentScopes[currentScopes.size() - 1]->unblock();
 			vector<vector<string>> ifInstructions = currentScopes[currentScopes.size() - 1][0].getInstructions();
@@ -106,18 +114,18 @@ void Interpreter::execute() {
 			auto ifDefinition = trimTokens(ifInstructions[0]);
 
 			std::vector<string> relevantTokens(ifDefinition.begin() + 1, ifDefinition.end());
-			bool conditionState = handleCondition(relevantTokens, currentScopes[currentScopes.size()-1]);
+			bool conditionState = handleCondition(relevantTokens, currentScopes[currentScopes.size() - 1]);
 
 			ifInstructions.pop_back();
 			ifInstructions.erase(ifInstructions.begin());
 
 			auto ifInterpreter = new Interpreter(ifInstructions, currentScopes[currentScopes.size() - 1]);
 
-			if(conditionState){
+			if (conditionState) {
 				ifInterpreter->execute();
 			}
 
-			if(lastScope->get_identifier() == "if") currentScopes.pop_back();
+			if (ifScope->get_identifier() == "if") currentScopes.pop_back();
 		}
 		else {
 			if (currentScopes[currentScopes.size() - 1]->isBlocked()) continue;
@@ -269,3 +277,22 @@ std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<str
 	return args;
 }
 
+Scope* Interpreter::findLatestScope(const std::string& identifier, std::vector<Scope*>& currentScopes) {
+	for (int i = currentScopes.size() - 1; i >= 0; i--) {
+		if (currentScopes[i]->get_identifier() == identifier) {
+			return currentScopes[i];
+		}
+	}
+	return nullptr;
+}
+
+Scope* Interpreter::findScopeDepth(int depth, std::vector<Scope*>& currentScopes) {
+	for(auto& currentScope: currentScopes) {
+		if (currentScope->getDepth() == depth) {
+			return currentScope;
+			break;
+	  }
+	}
+
+	return currentScopes[0];
+}

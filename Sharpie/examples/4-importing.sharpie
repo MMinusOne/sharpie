@@ -1,0 +1,5 @@
+@import [loopTo100] from "./5-loop-to-100.sharpe";
+
+fn main() {
+    loopTo100();
+}

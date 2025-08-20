@@ -55,4 +55,5 @@ void Scope::executeStandardLib(const std::vector<string>& data) {
 
 void Scope::setParent(Scope* parent) {
 	this->variableStoreHeap.insert(parent->variableStoreHeap.begin(), parent->variableStoreHeap.end());
+	this->depth = parent->depth + 1;
 }

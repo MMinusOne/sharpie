@@ -23,5 +23,8 @@ public:
 	std::string getStringOrVariableValue(std::string& code, Scope* currentScope);
 	std::vector<std::string> getStringsOrVariableValues(std::vector<string>& tokens, Scope* currentScope);
 	VariableData* getVariable(string name, Scope* currentScope);
+
+	Scope* findLatestScope(const std::string& identifier, std::vector<Scope*>& currentScopes);
+	Scope* findScopeDepth(int depth, std::vector<Scope*>& currentScopes);
 };
 

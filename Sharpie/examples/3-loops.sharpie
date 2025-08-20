@@ -1,10 +1,10 @@
-fn logNormal(int index) {
+fn logNormal() {
     newLine();
     log("I am now" index "years old");
     newLine();
 }
 
-fn logHappy(int index) {
+fn logHappy() {
     newLine();
     log("I AM FINALLY" index "YEARS OLD WIWIWIWIW");
     newLine();
