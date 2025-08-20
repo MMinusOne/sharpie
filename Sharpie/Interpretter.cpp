@@ -8,7 +8,7 @@
 #include "ScopeManager.h"
 #include "Split.h"
 #include <iostream>
-#include "MicroInterpreter.h"
+#include "StringMicroInterpreter.h"
 
 /**
 	MAKE MICRO INTERPRETER THAT CAN HANDLE:
@@ -204,10 +204,13 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 	//	this->handleFunction(relevantTokens, currentScope);
 	//	value = ScopeManager::getInstance()->getGlobal(tokens[5])->getScopeReturnData();
 	//}
-	
+
 	vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
-	auto microInterpreter = new MicroInterpreter(relevantTokens, currentScope);
-	value = microInterpreter->execute();
+
+	if (type == VariableTypes::String) {
+		auto stringMicroInterpreter = new StringMicroInterpreter(relevantTokens, currentScope);
+		value = stringMicroInterpreter->execute();
+	}
 
 	VariableData* variable = new VariableData(name, type, value);
 	if (currentScope != nullptr) currentScope->allocateVariable(name, variable);

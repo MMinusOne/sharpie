@@ -1,32 +1,32 @@
-#include "MicroInterpreter.h"
+#include "StringMicroInterpreter.h"
 #include <vector>
 #include <string>
 #include "Scope.h"
 #include  "ScopeManager.h"	
 #include "Interpretter.h";
 
-MicroInterpreter::MicroInterpreter(vector<string>& tokens) {
+StringMicroInterpreter::StringMicroInterpreter(vector<string>& tokens) {
 	this->tokens = tokens;
 };
 
-MicroInterpreter::MicroInterpreter(vector<string>& tokens, Scope* scope) {
+StringMicroInterpreter::StringMicroInterpreter(vector<string>& tokens, Scope* scope) {
 	this->tokens = tokens;
 	this->currentScope = scope;
 };
 
-string MicroInterpreter::handleArithmetic(vector<string>& tokens) {
+string StringMicroInterpreter::handleArithmetic(vector<string>& tokens) {
 	return "";
 }
 
-string MicroInterpreter::handleCondition(vector<string>& tokens) {
+string StringMicroInterpreter::handleCondition(vector<string>& tokens) {
 	return "";
 }
 
-string MicroInterpreter::handleFunction(vector<string>& tokens) {
+string StringMicroInterpreter::handleFunction(vector<string>& tokens) {
 	return "";
 }
 
-string MicroInterpreter::execute() {
+string StringMicroInterpreter::execute() {
 	string output;
 
 	bool isInFunctionArgs = false;
@@ -52,11 +52,12 @@ string MicroInterpreter::execute() {
 		if (token[0] == '"') {
 			tempBlock += token.substr(1, token.size() - 1);
 			tempBlock += " ";
-			fnArgs.push_back(tempBlock);
+			if (isInFunctionArgs) {
+				fnArgs.push_back(tempBlock);
+			}
 			isInString = true;
 			continue;
 		}
-
 
 		if (token[token.size() - 1] == '"') {
 			tempBlock += token.substr(0, token.size() - 1);
@@ -79,6 +80,7 @@ string MicroInterpreter::execute() {
 
 		if (token[0] == '<') {
 			isInFunctionArgs = true;
+			tempBlock.clear();
 			continue;
 		}
 

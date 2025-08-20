@@ -6,7 +6,7 @@ fn main() {
     var string name = "Michael";
 
     for (index;1;17) 
-        var string sentence = extract makeSentence(name index);
+        var string sentence = < makeSentence(name index) >;
         log(sentence);
         newLine();
     for_end

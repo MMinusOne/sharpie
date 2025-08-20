@@ -125,7 +125,7 @@
   <ItemGroup>
     <ClCompile Include="Interpretter.cpp" />
     <ClCompile Include="Lexer.cpp" />
-    <ClCompile Include="MicroInterpreter.cpp" />
+    <ClCompile Include="StringMicroInterpreter.cpp" />
     <ClCompile Include="Scope.cpp" />
     <ClCompile Include="ScopeManager.cpp" />
     <ClCompile Include="Sharpie.cpp" />
@@ -136,7 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Interpretter.h" />
     <ClInclude Include="Lexer.h" />
-    <ClInclude Include="MicroInterpreter.h" />
+    <ClInclude Include="StringMicroInterpreter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scope.h" />
     <ClInclude Include="ScopeManager.h" />

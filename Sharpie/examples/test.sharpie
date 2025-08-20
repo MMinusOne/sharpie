@@ -1,9 +1,9 @@
-fn getName() { 
-    return "Salloum";
+fn getName(string name) { 
+    return name "Salloum";
 }
 
 fn main() { 
     newLine();
-    var string name = "Michael :" < getName() >;
+    var string name = "Name :" < getName("Michael") >;
     log(name);
 }

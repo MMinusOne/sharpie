@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\MicroInterpreters">
+      <UniqueIdentifier>{0ef060a9-5315-4664-a6dc-16975036da47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MicroInterpreters">
+      <UniqueIdentifier>{3d4507a9-15bd-4439-a08c-59c95fba54d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sharpie.cpp">
@@ -39,8 +45,8 @@
     <ClCompile Include="Interpretter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MicroInterpreter.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="StringMicroInterpreter.cpp">
+      <Filter>Source Files\MicroInterpreters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,8 +83,8 @@
     <ClInclude Include="trimTokens.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MicroInterpreter.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="StringMicroInterpreter.h">
+      <Filter>Header Files\MicroInterpreters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

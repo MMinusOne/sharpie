@@ -1,6 +1,6 @@
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\Interpretter.cpp;C:\Users\LENOVO\Desktop\sharpie\Sharpie\x64\Debug\Interpretter.obj
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\Lexer.cpp;C:\Users\LENOVO\Desktop\sharpie\Sharpie\x64\Debug\Lexer.obj
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\MicroInterpreter.cpp;C:\Users\LENOVO\Desktop\sharpie\Sharpie\x64\Debug\MicroInterpreter.obj
+C:\Users\LENOVO\Desktop\sharpie\Sharpie\StringMicroInterpreter.cpp;C:\Users\LENOVO\Desktop\sharpie\Sharpie\x64\Debug\StringMicroInterpreter.obj
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\Scope.cpp;C:\Users\LENOVO\Desktop\sharpie\Sharpie\x64\Debug\Scope.obj
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\ScopeManager.cpp;C:\Users\LENOVO\Desktop\sharpie\Sharpie\x64\Debug\ScopeManager.obj
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\Sharpie.cpp;C:\Users\LENOVO\Desktop\sharpie\Sharpie\x64\Debug\Sharpie.obj

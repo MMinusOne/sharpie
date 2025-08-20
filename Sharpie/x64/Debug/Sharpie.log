@@ -1,6 +1,6 @@
-﻿  MicroInterpreter.cpp
+﻿  StringMicroInterpreter.cpp
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(1,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  (compiling source file 'MicroInterpreter.cpp')
+  (compiling source file 'StringMicroInterpreter.cpp')
   
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\MicroInterpreter.cpp(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\LENOVO\Desktop\sharpie\Sharpie\StringMicroInterpreter.cpp(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   Sharpie.vcxproj -> C:\Users\LENOVO\Desktop\sharpie\x64\Debug\Sharpie.exe

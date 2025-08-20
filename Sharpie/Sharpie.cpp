@@ -236,7 +236,6 @@ void handleTopLevel(vector<string> lines) {
 int main() {
 	initializeStandardLib();
 
-	string sharpiePath = getMainSharpieExecutionPath();
 	string mainCode = readFile(getMainSharpieExecutionPath());
 
 	auto lexer = Lexer(mainCode);
