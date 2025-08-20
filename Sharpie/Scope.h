@@ -16,10 +16,12 @@ private:
 	std::string identifier;
 	bool blocked;
 	int depth = 0;
+	string scopeReturnData;
 public:
 	Scope(std::string identifier);
 	std::string get_identifier();
 	void setParent(Scope* parent);
+	void setScopeReturnData(string data);
 	void allocateVariable(string identifier, VariableData* variableData);
 	void addInstructions(std::vector<string> instructions);
 	VariableData* getVariable(string identifier);
@@ -33,5 +35,6 @@ public:
 	inline int getDepth() { return depth; }
 	inline bool getIsStandardLib() { return isStandardLib; }
 	inline std::unordered_map<std::string, VariableData*>& getVariablesHeap() { return variableStoreHeap; }
+	inline string getScopeReturnData() { return scopeReturnData; }
 };
 

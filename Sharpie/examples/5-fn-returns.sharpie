@@ -1,0 +1,15 @@
+fn int add(int a int b) { 
+    return a + b;
+}
+
+fn int subtract(int a int b) { 
+    return a - b;
+}
+
+fn main() { 
+    int addition = add(5 ,3);
+    int subtraction = subtract(10, 4);
+
+    log(addition);
+    log(subtraction);
+}

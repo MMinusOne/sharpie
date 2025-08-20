@@ -137,6 +137,21 @@ void Interpreter::execute() {
 
 			if (ifScope->get_identifier() == "if") currentScopes.pop_back();
 		}
+		else if (opcode == "return") {
+			tokens = trimTokens(tokens);
+			vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
+			auto dataVec = getStringsOrVariableValues(relevantTokens, currentScopes[0]);
+			string data;
+			for (auto& t : dataVec) {
+				if (data.empty()) {
+					data = t;
+				}
+				else {
+					data += " " + t;
+				}
+			}
+			currentScopes[0]->setScopeReturnData(data);
+		}
 		else {
 			auto parentScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth(), currentScopes);
 			if (parentScope->isBlocked()) continue;
@@ -151,16 +166,25 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 	string name = tokens[2];
 	string value;
 
-	for (int i = 4; i < tokens.size(); i++) {
-		auto token = tokens[i];
-		if (i != 4) value += " ";
-		value += token;
-		if (type == VariableTypes::String) {
-			if (token[token.size() - 2] == '"') {
-				break;
+	if (tokens[4] != "extract") {
+		vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
+		auto vecData = getStringsOrVariableValues(relevantTokens, currentScope);
+
+		for (auto& token : vecData) {
+			if (value.empty()) {
+				value = token;
+			}
+			else {
+				value += " " + token;
 			}
 		}
 	}
+	else {
+		vector<string> relevantTokens(tokens.begin() + 5, tokens.end());
+		this->handleFunction(relevantTokens, currentScope);
+		value = ScopeManager::getInstance()->getGlobal(tokens[5])->getScopeReturnData();
+	}
+
 
 	VariableData* variable = new VariableData(name, type, value);
 	if (currentScope != nullptr) currentScope->allocateVariable(name, variable);

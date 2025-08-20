@@ -17,6 +17,10 @@ VariableData* Scope::getVariable(string identifier) {
 	return variableStoreHeap[identifier];
 }
 
+void Scope::setScopeReturnData(string data) {
+	scopeReturnData = data;
+}
+
 void Scope::block() {
 	blocked = true;
 }

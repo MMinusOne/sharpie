@@ -1,6 +1,12 @@
+fn getName() { 
+    log("from getName()");
+    return "Michael";
+}
+
 fn main() { 
-    for (index;10;30)
-        log(index);
-        newLine();
-    for_end
+    newLine();
+    var string name = extract getName();
+    newLine();
+    log(name);
+    newLine();
 }
