@@ -2,12 +2,5 @@
 C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'Interpretter.cpp')
   
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\Interpretter.cpp(376,13): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  StringMicroInterpreter.cpp
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\VariableData.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  (compiling source file 'StringMicroInterpreter.cpp')
-  
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\StringMicroInterpreter.cpp(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\LENOVO\Desktop\sharpie\Sharpie\StringMicroInterpreter.cpp(7,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  Generating Code...
+C:\Users\LENOVO\Desktop\sharpie\Sharpie\Interpretter.cpp(382,13): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   Sharpie.vcxproj -> C:\Users\LENOVO\Desktop\sharpie\x64\Debug\Sharpie.exe

@@ -1,5 +1,5 @@
 fn main() { 
-    var array<string> names = ["Michae" | "Bob" | "Alice"];
+    var array<string> names = ["Michael" | "Bob" | "Alice"];
 
 
     for (index;0;3) {

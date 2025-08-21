@@ -1,0 +1,12 @@
+fn main() { 
+    var HashMap hashmap = new HashMap();
+    
+    var string key = "Michael";
+    var int value = 20;
+
+    hashmap.insert(key, value);
+
+    var string age = hashmap.get(key);
+
+    log(age);
+}

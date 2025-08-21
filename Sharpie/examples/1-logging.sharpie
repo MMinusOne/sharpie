@@ -1,11 +1,3 @@
-fn logNameAndAge (string name int age) {
-  log("My name is:" name);
-  newLine();
-  log("Ageisssssss:" age);
-}
-
 fn main () {
-  var string name = "Michael Salloum";
-  var int age = 29;
-  logNameAndAge(name age);
+  stdlib.log("hi");
 }

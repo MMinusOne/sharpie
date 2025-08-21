@@ -1,0 +1,31 @@
+class AppRouter { 
+    fn log() { 
+        log("Hello");
+        return "Logged to console!";
+    }
+
+    fn if_statements(any body) { 
+        var int personOneAge = body.get("personOne");
+        var int personTwoAge = body.get("personTwoAge");
+
+        do_if (personOneAge > personTwoAge) 
+            return "Person one is older than person two";
+        if_end
+
+        do_if (personOneAge < personTwoAge) 
+            return "Person  two is older than person one";
+        if_end
+    }
+
+    fn loops(any body) { 
+        var int start = HashMap.get("start");
+        var int end = HashMap.get("end");
+        var string text = "";
+
+        for(index;start;end)
+            text = text "\n We are now at" index;
+        for_end
+
+        return "Looped" start "until" end;
+    }
+}

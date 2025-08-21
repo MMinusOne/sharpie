@@ -55,6 +55,9 @@ void handleFn() {
 void initializeStandardLib() {
 	auto scopeManager = ScopeManager::getInstance();
 
+	VariableData* stdlibVar = new VariableData("stdlib", VariableTypes::Class);
+	Scope* stdlibScope = new Scope("stdlib");
+
 	Scope* log = new Scope("log");
 	log->allocateStandardLib([](std::vector<string> args) {
 		for (int i = 0; i < args.size(); i++) {
@@ -162,9 +165,11 @@ void initializeStandardLib() {
 	}
 	});
 
-	scopeManager->addScope("log", log);
-	scopeManager->addScope("newLine", newLine);
-	scopeManager->addScope("@import", import);
+	stdlibVar->setClassValue(stdlibScope);
+	stdlibScope->addFunctionScope("log", log);
+	stdlibScope->addFunctionScope("newLine", newLine);
+	stdlibScope->addFunctionScope("@import", import);
+	scopeManager->addScope("stdlib", stdlibScope);
 }
 
 void handleTopLevel(vector<string> lines) {

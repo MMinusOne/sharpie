@@ -17,6 +17,11 @@ void Scope::allocateVariable(string identifier, VariableData* variableData) {
 	variableStoreHeap[identifier] = variableData;
 }
 
+void Scope::addStandardLib(string identifier, std::function<void(const std::vector<string>&)> stdlibFn) {
+	stdlibStoreHeap[identifier] = stdlibFn;
+	isStandardLib = true;
+}
+
 void Scope::eraseVariable(string identifier) {
 	variableStoreHeap.erase(identifier);
 }

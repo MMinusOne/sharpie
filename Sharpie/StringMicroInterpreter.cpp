@@ -141,9 +141,15 @@ string StringMicroInterpreter::execute() {
 			if (varData == nullptr) {
 				auto fn = classData->getFunctionScope(path[1]);
 				fn->setParent(classData);
-				auto fnInterpreter = new Interpreter(fn->getInstructions(), fn);
-				fnInterpreter->execute();
-				tempBlock += fn->getScopeReturnData();
+				if (fn->getIsStandardLib()) {
+					auto fnInterpreter = new Interpreter(fn->getInstructions(), fn);
+					fnInterpreter->execute();
+					tempBlock += fn->getScopeReturnData();
+				}
+				else {
+					fn->executeStandardLib(tokens);
+					tempBlock += fn->getScopeReturnData();
+				}
 			}
 			else {
 				tempBlock += varData->getPrimitiveValue();

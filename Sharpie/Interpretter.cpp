@@ -58,7 +58,7 @@ void Interpreter::execute() {
 		auto scope = currentScopes[currentScopes.size() - 1];
 		int argI = 0;
 		for (const auto& variable : scope->getVariablesHeap()) {
-			if (variable.second == nullptr || variable.first == "scope") continue;
+			if (variable.second == nullptr || variable.first == "scope" || variable.first == "stdlib") continue;
 			variable.second->setPrimitiveValue(args[argI]);
 			argI++;
 		}
@@ -248,9 +248,15 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 	}
 	else {
 		fnName = paths[1];
-		auto varRef = currentScope->getVariable(paths[0]);
-		auto classValue = varRef->getClassValue();
-		fn = classValue->getFunctionScope(fnName);
+		if (paths[0] == "stdlib") {
+			auto stdlibScope = scopeManager->getGlobal("stdlib");
+			fn = stdlibScope->getFunctionScope(fnName);
+		}
+		else {
+			auto varRef = currentScope->getVariable(paths[0]);
+			auto classValue = varRef->getClassValue();
+			fn = classValue->getFunctionScope(fnName);
+		}
 	}
 
 	if (!tokens.empty()) {

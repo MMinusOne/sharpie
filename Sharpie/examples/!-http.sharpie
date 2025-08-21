@@ -1,0 +1,12 @@
+@import [AppRouter] from "./8-App-router.sharpie";
+
+fn main() {
+    var int PORT = 2000;
+    var HttpServer server = new HttpServer(PORT);
+
+    var AppRouter router = new AppRouter();
+    
+    server.get("/log", router.log);
+    server.post("/if_statements", router.if_statements);
+    server.post("/loops", router.loops);
+}
