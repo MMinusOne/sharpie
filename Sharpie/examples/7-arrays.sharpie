@@ -1,0 +1,9 @@
+fn main() { 
+    var array<string> names = ["Michae" | "Bob" | "Alice"];
+
+
+    for (index;0;3) {
+        var string name = names[index];
+        log(name);
+    }
+}

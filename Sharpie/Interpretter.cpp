@@ -59,7 +59,7 @@ void Interpreter::execute() {
 		int argI = 0;
 		for (const auto& variable : scope->getVariablesHeap()) {
 			if (variable.second == nullptr) continue;
-			variable.second->setValue(args[argI]);
+			variable.second->setPrimitiveValue(args[argI]);
 			argI++;
 		}
 	}
@@ -184,41 +184,36 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 	tokens = trimTokens(tokens);
 	VariableTypes type = convertToType(tokens[1]);
 	string name = tokens[2];
-	string value;
+	VariableData* variable = new VariableData(name, type);
 
-	//if (tokens[4] != "extract") {
-	//	vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
-	//	auto vecData = getStringsOrVariableValues(relevantTokens, currentScope);
+	if (tokens[4] != "new") {
+		string value;
+		vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
 
-	//	for (auto& token : vecData) {
-	//		if (value.empty()) {
-	//			value = token;
-	//		}
-	//		else {
-	//			value += " " + token;
-	//		}
-	//	}
-	//}
-	//else {
-	//	vector<string> relevantTokens(tokens.begin() + 5, tokens.end());
-	//	this->handleFunction(relevantTokens, currentScope);
-	//	value = ScopeManager::getInstance()->getGlobal(tokens[5])->getScopeReturnData();
-	//}
+		if (type == VariableTypes::String) {
+			auto stringMicroInterpreter = new StringMicroInterpreter(relevantTokens, currentScope);
+			value = stringMicroInterpreter->execute();
+		}if (type == VariableTypes::Int) {
+			value = relevantTokens[0];
+		}
+		else if (type == VariableTypes::Bool) {
 
-	vector<string> relevantTokens(tokens.begin() + 4, tokens.end());
+		}
+		else if (type == VariableTypes::Null) {
+		}
 
-	if (type == VariableTypes::String) {
-		auto stringMicroInterpreter = new StringMicroInterpreter(relevantTokens, currentScope);
-		value = stringMicroInterpreter->execute();
-	}if (type == VariableTypes::Int) {
-		value = relevantTokens[0];
+		variable->setPrimitiveValue(value);
 	}
-	else if (type == VariableTypes::Bool) {
-		
-	}else if(type == VariableTypes::Null) {
+	else {
+		auto scopeManager = ScopeManager::getInstance();
+		auto classRef = scopeManager->getGlobal(tokens[5]);
+
+		auto classFieldsInterpreter = new Interpreter(classRef->getInstructions(), classRef);
+		classFieldsInterpreter->execute();
+
+		variable->setClassValue(classRef);
 	}
 
-	VariableData* variable = new VariableData(name, type, value);
 	if (currentScope != nullptr) currentScope->allocateVariable(name, variable);
 }
 
@@ -234,7 +229,6 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 		std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
 		fnArgs = this->getStringsOrVariableValues(relevantTokens, currentScope);
 	}
-
 	if (fn->getIsStandardLib()) {
 		if (fnName[0] != '@') {
 			fn->executeStandardLib(fnArgs);
@@ -307,7 +301,7 @@ std::string Interpreter::getStringOrVariableValue(string& code, Scope* currentSc
 		return code;
 	}
 
-	return variableData->getValue();
+	return variableData->getPrimitiveValue();
 }
 
 std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<string>& tokens, Scope* currentScope) {
@@ -343,7 +337,7 @@ std::vector<std::string> Interpreter::getStringsOrVariableValues(std::vector<str
 				continue;
 			};
 
-			args.push_back(varData->getValue());
+			args.push_back(varData->getPrimitiveValue());
 		}
 	}
 

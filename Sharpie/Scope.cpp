@@ -41,6 +41,14 @@ void Scope::addInstructions(std::vector<string> instructions) {
 	this->instructions.push_back(instructions);	
 }
 
+void Scope::addFunctionScope(string fnName, Scope* fnScope) {
+	functionStoreHeap[fnName] = fnScope;
+}
+
+Scope* Scope::getFunctionScope(string fnName) {
+	return functionStoreHeap[fnName];
+}
+
 std::vector<std::vector<string>> Scope::getInstructions() {
 	return this->instructions;
 }

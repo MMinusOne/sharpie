@@ -47,6 +47,10 @@ string readFile(const string& filePath) {
 	return buffer.str();
 }
 
+void handleFn() {
+
+}
+
 void initializeStandardLib() {
 	auto scopeManager = ScopeManager::getInstance();
 
@@ -157,7 +161,6 @@ void initializeStandardLib() {
 	}
 	});
 
-
 	scopeManager->addScope("log", log);
 	scopeManager->addScope("newLine", newLine);
 	scopeManager->addScope("@import", import);
@@ -166,6 +169,7 @@ void initializeStandardLib() {
 void handleTopLevel(vector<string> lines) {
 	auto scopeManager = ScopeManager::getInstance();
 	Scope* currentScope = nullptr;
+	Scope* classScope = nullptr;
 
 	for (const auto& line : lines) {
 		auto splitters = std::vector<string>{ " ", "(", ")", ";" };
@@ -210,17 +214,32 @@ void handleTopLevel(vector<string> lines) {
 				currentScope->allocateVariable(variableName, variableData);
 				argumentsIndex += 2;
 			}
+		}
+		else if (opcode == "class") {
+			if (currentScope != nullptr) continue;
+			tokens = trimTokens(tokens);
+			auto className = tokens[1];
+			classScope = new Scope(className);
 
 		}
 		else if (opcode == "}") {
 			auto identifier = currentScope->get_identifier();
+			if (classScope != nullptr) {
+				classScope->addFunctionScope(identifier, currentScope);
+				currentScope = nullptr;
+				continue;
+			}
 			scopeManager->addScope(identifier, currentScope);
-
+			
 			if (identifier == "main") {
 				auto interpreter = new Interpreter(currentScope->getInstructions(), currentScope);
 				interpreter->execute();
 			}
 			currentScope = nullptr;
+		}
+		else if (opcode == "class_end") {
+			scopeManager->addScope(classScope->get_identifier(), classScope);
+			classScope = nullptr;
 		}
 		else if (opcode[0] == '@') {
 			auto macro = scopeManager->getGlobal(opcode);
@@ -228,7 +247,12 @@ void handleTopLevel(vector<string> lines) {
 			macro->executeStandardLib(relevantTokens);
 		}
 		else {
-			currentScope->addInstructions(tokens);
+			if (currentScope != nullptr) {
+				currentScope->addInstructions(tokens);
+			}
+			else {
+				classScope->addInstructions(tokens);
+			}
 		}
 	}
 }

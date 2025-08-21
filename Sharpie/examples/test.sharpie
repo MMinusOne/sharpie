@@ -1,9 +1,24 @@
-fn getName(string name) { 
-    return name "Salloum";
-}
+class User 
+    var string balance = "1000";
 
-fn main() { 
-    newLine();
-    var string name = "Name :" < getName("Michael") >;
-    log(name);
+    fn constructor (int bankBalance) {
+     
+    }
+
+    fn setBalanace (int number) {
+    }
+
+    fn getBalance () {
+        return balance;
+    }
+class_end
+
+fn main() {
+  var User user = new User();
+  var string balance = user.balance;
+  log(balance);
+
+  var string balanceThruFunction = < user.getBalance() >;
+  newLine();
+  log(balanceThruFunction);
 }

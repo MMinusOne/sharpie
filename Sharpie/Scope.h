@@ -1,3 +1,4 @@
+#pragma once
 #include <unordered_map>
 #include <string>
 #include "VariableData.h"
@@ -5,11 +6,11 @@
 #include <string>
 #include <functional>
 
-#pragma once
 class Scope
 {
 private:
 	std::unordered_map<std::string, VariableData*> variableStoreHeap;
+	std::unordered_map<std::string, Scope*> functionStoreHeap;
 	std::vector<std::vector<string>> instructions;
 	std::function<void(const std::vector<string>&)> standardLibInstructions = nullptr;
 	bool isStandardLib = false;
@@ -24,6 +25,8 @@ public:
 	void setScopeReturnData(string data);
 	void allocateVariable(string identifier, VariableData* variableData);
 	void addInstructions(std::vector<string> instructions);
+	void addFunctionScope(string fnName, Scope* scope);
+	Scope* getFunctionScope(string fnName);
 	VariableData* getVariable(string identifier);
 	void allocateInstructions(std::vector<std::vector<std::string>> instructions);
 	void allocateStandardLib(std::function<void(const std::vector<string>&)>);

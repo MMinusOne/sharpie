@@ -1,0 +1,30 @@
+class User 
+    var string balance = 1000;
+
+    constructor (int bankBalance) {
+        do_if (balance != null)
+            scope::balance = bankBalance;
+        if_end
+    }
+
+    fn setBalanace (int number) {
+        scope::balance = number;
+    }
+
+    fn getBalanace () {
+        var int balance = scope::balance;
+        return balance;
+    }
+class_end
+
+fn main() {
+    var User user1 = new User(); 
+    var user1_balance = < user1.getBalanace() >
+
+    log(user1_balance);
+
+    var User user2 = new User(500); 
+    var user2_balance = < user2.getBalanace() >
+
+    log(user2_balance);
+}

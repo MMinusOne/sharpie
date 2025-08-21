@@ -4,6 +4,7 @@
 #include "Scope.h"
 #include  "ScopeManager.h"	
 #include "Interpretter.h";
+#include "Split.h";
 
 StringMicroInterpreter::StringMicroInterpreter(vector<string>& tokens) {
 	this->tokens = tokens;
@@ -94,21 +95,57 @@ string StringMicroInterpreter::execute() {
 			continue;
 		}
 
+		auto path = split(token, { "." });
 
-		auto scope = ScopeManager::getInstance()->getGlobal(token);
+		if (path.size() == 1) {
+			auto scope = ScopeManager::getInstance()->getGlobal(token);
 
-		if (scope != nullptr) {
-			fnScope = scope;
-			continue;
+			if (scope != nullptr) {
+				fnScope = scope;
+				continue;
+			}
+		}
+		else {
+			auto classVariable = path[0];
+			auto classRef = currentScope->getVariable(classVariable);
+			auto classData = classRef->getClassValue();
+			auto fn = classData->getFunctionScope(path[1]);
+			if (fn != nullptr) {
+				fn->setParent(classData);
+				fnScope = fn;
+				continue;
+			}
 		}
 
-		auto varData = currentScope->getVariable(token);
 
-		if (varData != nullptr) {
-			tempBlock += varData->getValue();
-			if (isInFunctionArgs) {
-				fnArgs.push_back(tempBlock);
+		if (path.size() == 1) {
+			auto varData = currentScope->getVariable(token);
+			if (varData != nullptr) {
+				auto primitiveValue = varData->getPrimitiveValue();
+				tempBlock += primitiveValue;
+				if (isInFunctionArgs) {
+					fnArgs.push_back(tempBlock);
+				}
+				tempBlock.clear();
 			}
+		}
+		else {
+			auto classVariable = path[0];
+			auto classRef = currentScope->getVariable(classVariable);
+			auto classData = classRef->getClassValue();
+			auto varData = classData->getVariable(path[1]);
+
+			if (varData == nullptr) {
+				auto fn = classData->getFunctionScope(path[1]);
+				fn->setParent(classData);
+				auto fnInterpreter = new Interpreter(fn->getInstructions(), fn);
+				fnInterpreter->execute();
+				tempBlock += fn->getScopeReturnData();
+			}
+			else {
+				tempBlock += varData->getPrimitiveValue();
+			}
+			output += tempBlock;
 			tempBlock.clear();
 		}
 	}

@@ -6,9 +6,11 @@ using std::string;
 VariableData::VariableData(string name, VariableTypes type) {
 	this->name = name;
 	this->type = type;
+	this->classValue = nullptr;
 };
-VariableData::VariableData(string name, VariableTypes type, string value) {
+VariableData::VariableData(string name, VariableTypes type, string primitiveValue) {
 	this->name = name;
 	this->type = type;
-	this->value = value;
+	this->primitiveValue = primitiveValue;
+	this->classValue = nullptr;
 };
