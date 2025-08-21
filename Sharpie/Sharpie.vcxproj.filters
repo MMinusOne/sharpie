@@ -19,15 +19,18 @@
     <Filter Include="Header Files\MicroInterpreters">
       <UniqueIdentifier>{3d4507a9-15bd-4439-a08c-59c95fba54d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{e24f3f06-2a85-4050-867d-f9e44ae393ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{e7f9a7ce-daeb-45b5-9447-b68dffbeb6a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sharpie.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Lexer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Split.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScopeManager.cpp">
@@ -39,21 +42,18 @@
     <ClCompile Include="VariableData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StandardLibFunctionData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Interpretter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StringMicroInterpreter.cpp">
       <Filter>Source Files\MicroInterpreters</Filter>
     </ClCompile>
+    <ClCompile Include="Split.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lexer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Split.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScopeManager.h">
@@ -71,20 +71,20 @@
     <ClInclude Include="VariableTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TypeConverter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StandardLibFunctionData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Interpretter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trimTokens.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StringMicroInterpreter.h">
       <Filter>Header Files\MicroInterpreters</Filter>
+    </ClInclude>
+    <ClInclude Include="Split.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="trimTokens.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeConverter.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

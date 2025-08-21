@@ -210,6 +210,12 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 	if (type == VariableTypes::String) {
 		auto stringMicroInterpreter = new StringMicroInterpreter(relevantTokens, currentScope);
 		value = stringMicroInterpreter->execute();
+	}if (type == VariableTypes::Int) {
+		value = relevantTokens[0];
+	}
+	else if (type == VariableTypes::Bool) {
+		
+	}else if(type == VariableTypes::Null) {
 	}
 
 	VariableData* variable = new VariableData(name, type, value);

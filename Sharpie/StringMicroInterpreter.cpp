@@ -90,6 +90,7 @@ string StringMicroInterpreter::execute() {
 			output += fnScope->getScopeReturnData();
 			isInFunctionArgs = false;
 			fnScope = nullptr;
+			fnArgs.clear();
 			continue;
 		}
 
@@ -103,11 +104,12 @@ string StringMicroInterpreter::execute() {
 
 		auto varData = currentScope->getVariable(token);
 
-		if (varData == nullptr) {
+		if (varData != nullptr) {
 			tempBlock += varData->getValue();
 			if (isInFunctionArgs) {
 				fnArgs.push_back(tempBlock);
 			}
+			tempBlock.clear();
 		}
 	}
 

@@ -1,4 +1,4 @@
-fn makeSentence(int name int age) {
+fn makeSentence(string name int age) {
     return name "is" age "years old";
 }
 

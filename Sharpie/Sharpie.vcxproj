@@ -130,7 +130,6 @@
     <ClCompile Include="ScopeManager.cpp" />
     <ClCompile Include="Sharpie.cpp" />
     <ClCompile Include="Split.cpp" />
-    <ClCompile Include="StandardLibFunctionData.cpp" />
     <ClCompile Include="VariableData.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,7 +140,6 @@
     <ClInclude Include="Scope.h" />
     <ClInclude Include="ScopeManager.h" />
     <ClInclude Include="Split.h" />
-    <ClInclude Include="StandardLibFunctionData.h" />
     <ClInclude Include="trimTokens.h" />
     <ClInclude Include="TypeConverter.h" />
     <ClInclude Include="VariableData.h" />

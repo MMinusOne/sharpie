@@ -1,4 +1,4 @@
-fn logAdultNameAndAge () { 
+fn logAdultNameAndAge (string name int age) { 
   log("I am an adult);
   newLine();
   log("My name is" name);
@@ -6,7 +6,7 @@ fn logAdultNameAndAge () {
   log("My age is" age);
 }
 
-fn logMinorNameAndAge () {
+fn logMinorNameAndAge (string name int age) {
   log("I am a minor);
   newLine();
   log("My name is" name);
