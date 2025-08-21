@@ -3,6 +3,9 @@
 
 Scope::Scope(std::string identifier) {
 	this->identifier = identifier;
+	auto selfScopeVariable = new VariableData("scope", VariableTypes::Class);
+	selfScopeVariable->setClassValue(this);
+	this->allocateVariable("scope", selfScopeVariable);
 }
 
 std::string Scope::get_identifier() {

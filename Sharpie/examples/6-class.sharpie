@@ -3,12 +3,12 @@ class User
 
     constructor (int bankBalance) {
         do_if (balance != null)
-            scope::balance = bankBalance;
+            var int balance = scope.balance - number;
         if_end
     }
 
     fn setBalanace (int number) {
-        scope::balance = number;
+        var int balance = number;
     }
 
     fn getBalanace () {
