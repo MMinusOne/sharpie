@@ -97,7 +97,7 @@ string StringMicroInterpreter::execute() {
 
 		auto path = split(token, { "." });
 
-		if (path.size() == 1) {
+		if (path.size() == 1 && isInFunctionArgs) {
 			auto scope = ScopeManager::getInstance()->getGlobal(token);
 
 			if (scope != nullptr) {
@@ -105,13 +105,13 @@ string StringMicroInterpreter::execute() {
 				continue;
 			}
 		}
-		else {
+		else if(isInFunctionArgs) {
 			auto classVariable = path[0];
 			auto classRef = currentScope->getVariable(classVariable);
 			auto classData = classRef->getClassValue();
 			auto fn = classData->getFunctionScope(path[1]);
+			fn->setParent(classData);
 			if (fn != nullptr) {
-				fn->setParent(classData);
 				fnScope = fn;
 				continue;
 			}
@@ -125,6 +125,9 @@ string StringMicroInterpreter::execute() {
 				tempBlock += primitiveValue;
 				if (isInFunctionArgs) {
 					fnArgs.push_back(tempBlock);
+				}
+				else {
+					output += tempBlock;
 				}
 				tempBlock.clear();
 			}

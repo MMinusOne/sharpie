@@ -58,7 +58,7 @@ void Interpreter::execute() {
 		auto scope = currentScopes[currentScopes.size() - 1];
 		int argI = 0;
 		for (const auto& variable : scope->getVariablesHeap()) {
-			if (variable.second == nullptr) continue;
+			if (variable.second == nullptr || variable.first == "scope") continue;
 			variable.second->setPrimitiveValue(args[argI]);
 			argI++;
 		}
@@ -160,17 +160,8 @@ void Interpreter::execute() {
 		else if (opcode == "return") {
 			tokens = trimTokens(tokens);
 			vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
-			auto dataVec = getStringsOrVariableValues(relevantTokens, currentScopes[0]);
-			string data;
-			for (auto& t : dataVec) {
-				if (data.empty()) {
-					data = t;
-				}
-				else {
-					data += " " + t;
-				}
-			}
-			currentScopes[0]->setScopeReturnData(data);
+			auto returnDataInterpreter = new StringMicroInterpreter(relevantTokens, currentScopes[0]);
+			currentScopes[0]->setScopeReturnData(returnDataInterpreter->execute());
 		}
 		else {
 			auto parentScope = findScopeDepth(currentScopes[currentScopes.size() - 1]->getDepth(), currentScopes);
@@ -185,6 +176,30 @@ void Interpreter::handleVariable(std::vector<string>& tokens, Scope* currentScop
 	VariableTypes type = convertToType(tokens[1]);
 	string name = tokens[2];
 	VariableData* variable = new VariableData(name, type);
+
+	// this is really bad, probably should refactor lul, but im too lazy, the whole project is dogshit anyway
+	if (name == "mutate_class") {
+		string value;
+		vector<string> relevantTokens(tokens.begin() + 5, tokens.end());
+		name = tokens[3];
+		auto classParent = currentScope->getParent();
+		if (type == VariableTypes::String) {
+			auto stringMicroInterpreter = new StringMicroInterpreter(relevantTokens, currentScope);
+			value = stringMicroInterpreter->execute();
+		}if (type == VariableTypes::Int) {
+			value = relevantTokens[0];
+		}
+		else if (type == VariableTypes::Bool) {
+
+		}
+		else if (type == VariableTypes::Null) {
+		}
+		auto variable = new VariableData(name, type, value);
+		classParent->eraseVariable(name);
+		classParent->allocateVariable(name, variable);
+		//ScopeManager::getInstance()->updateScope(classValue->get_identifier(), classValue);
+		return;
+	}
 
 	if (tokens[4] != "new") {
 		string value;
@@ -222,8 +237,21 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 	std::vector<std::string> fnArgs;
 
 	tokens = trimTokens(tokens);
-	string fnName = tokens[0];
-	auto fn = scopeManager->getGlobal(fnName);
+	auto paths = split(tokens[0], { "." });
+	string fnName;
+
+	Scope* fn;
+
+	if (paths.size() == 1) {
+		fnName = paths[0];
+		fn = scopeManager->getGlobal(fnName);
+	}
+	else {
+		fnName = paths[1];
+		auto varRef = currentScope->getVariable(paths[0]);
+		auto classValue = varRef->getClassValue();
+		fn = classValue->getFunctionScope(fnName);
+	}
 
 	if (!tokens.empty()) {
 		std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());

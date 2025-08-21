@@ -12,6 +12,7 @@
 #include "TypeConverter.h"
 #include "Interpretter.h";
 #include "trimTokens.h";
+#include "StringMicroInterpreter.h";
 
 using std::string;
 using std::cout;
@@ -225,6 +226,7 @@ void handleTopLevel(vector<string> lines) {
 		else if (opcode == "}") {
 			auto identifier = currentScope->get_identifier();
 			if (classScope != nullptr) {
+				currentScope->setParent(classScope);
 				classScope->addFunctionScope(identifier, currentScope);
 				currentScope = nullptr;
 				continue;
@@ -244,7 +246,9 @@ void handleTopLevel(vector<string> lines) {
 		else if (opcode[0] == '@') {
 			auto macro = scopeManager->getGlobal(opcode);
 			std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
-			macro->executeStandardLib(relevantTokens);
+			auto argsInterpreter = new StringMicroInterpreter(relevantTokens, currentScope);
+			auto args = split(argsInterpreter->execute(), { " " });
+			macro->executeStandardLib(args);
 		}
 		else {
 			if (currentScope != nullptr) {

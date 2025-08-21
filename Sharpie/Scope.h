@@ -18,6 +18,7 @@ private:
 	bool blocked;
 	int depth = 0;
 	string scopeReturnData;
+	Scope* parent;
 public:
 	Scope(std::string identifier);
 	std::string get_identifier();
@@ -30,11 +31,13 @@ public:
 	VariableData* getVariable(string identifier);
 	void allocateInstructions(std::vector<std::vector<std::string>> instructions);
 	void allocateStandardLib(std::function<void(const std::vector<string>&)>);
+	void eraseVariable(string identifier);
 	void executeStandardLib(const std::vector<string>& data);
 	std::vector<std::vector<string>> getInstructions();
 	void block();
 	void unblock();
 	bool isBlocked();
+	Scope* getParent();
 	inline int getDepth() { return depth; }
 	inline bool getIsStandardLib() { return isStandardLib; }
 	inline std::unordered_map<std::string, VariableData*>& getVariablesHeap() { return variableStoreHeap; }

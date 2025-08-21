@@ -13,6 +13,10 @@ private:
 public:
 	static ScopeManager* getInstance();
 	void addScope(std::string scopeIdentifier, Scope* scope);
+	inline void updateScope(std::string scopeIdentifier, Scope* scope) {
+		scopeMemory.erase(scopeIdentifier);
+		this->addScope(scopeIdentifier, scope);
+	}
 	Scope* getGlobal(std::string id);
 };
 

@@ -6,6 +6,7 @@ Scope::Scope(std::string identifier) {
 	auto selfScopeVariable = new VariableData("scope", VariableTypes::Class);
 	selfScopeVariable->setClassValue(this);
 	this->allocateVariable("scope", selfScopeVariable);
+	parent = nullptr;
 }
 
 std::string Scope::get_identifier() {
@@ -14,6 +15,14 @@ std::string Scope::get_identifier() {
 
 void Scope::allocateVariable(string identifier, VariableData* variableData) {
 	variableStoreHeap[identifier] = variableData;
+}
+
+void Scope::eraseVariable(string identifier) {
+	variableStoreHeap.erase(identifier);
+}
+
+Scope* Scope::getParent() {
+	return this->parent;
 }
 
 VariableData* Scope::getVariable(string identifier) {
@@ -70,5 +79,6 @@ void Scope::executeStandardLib(const std::vector<string>& data) {
 
 void Scope::setParent(Scope* parent) {
 	this->variableStoreHeap.insert(parent->variableStoreHeap.begin(), parent->variableStoreHeap.end());
+	this->parent = parent;
 	this->depth = parent->depth + 1;
 }

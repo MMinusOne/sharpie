@@ -5,11 +5,12 @@ class User
      
     }
 
-    fn setBalanace (int number) {
+    fn setBalance (string number) {
+        var string mutate_class balance = number;
     }
 
     fn getBalance () {
-        return balance;
+        return scope.balance;
     }
 class_end
 
@@ -17,6 +18,9 @@ fn main() {
   var User user = new User();
   var string balance = user.balance;
   log(balance);
+
+  var string newBlance = "500";
+  user.setBalance(newBlance);
 
   var string balanceThruFunction = < user.getBalance() >;
   newLine();

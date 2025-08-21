@@ -1,30 +1,28 @@
 class User 
-    var string balance = 1000;
+    var string balance = "1000";
 
-    constructor (int bankBalance) {
-        do_if (balance != null)
-            var int balance = scope.balance - number;
-        if_end
+    fn constructor (int bankBalance) {
+     
     }
 
-    fn setBalanace (int number) {
-        var int balance = number;
+    fn setBalance (string number) {
+        var string mutate_class balance = number;
     }
 
-    fn getBalanace () {
-        var int balance = scope::balance;
-        return balance;
+    fn getBalance () {
+        return scope.balance;
     }
 class_end
 
 fn main() {
-    var User user1 = new User(); 
-    var user1_balance = < user1.getBalanace() >
+  var User user = new User();
+  var string balance = user.balance;
+  log(balance);
 
-    log(user1_balance);
+  var string newBlance = "500";
+  user.setBalance(newBlance);
 
-    var User user2 = new User(500); 
-    var user2_balance = < user2.getBalanace() >
-
-    log(user2_balance);
+  var string balanceThruFunction = < user.getBalance() >;
+  newLine();
+  log(balanceThruFunction);
 }
