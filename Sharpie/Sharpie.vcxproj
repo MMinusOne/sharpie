@@ -133,7 +133,6 @@
     <ClCompile Include="VariableData.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Downloads\httplib.h" />
     <ClInclude Include="Interpretter.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="StringMicroInterpreter.h" />

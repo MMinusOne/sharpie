@@ -252,6 +252,10 @@ void Interpreter::handleFunction(std::vector<string>& tokens, Scope* currentScop
 			auto stdlibScope = scopeManager->getGlobal("stdlib");
 			fn = stdlibScope->getFunctionScope(fnName);
 		}
+		else if (paths[0] == "httplib") {
+			auto stdlibScope = scopeManager->getGlobal("httplib");
+			fn = stdlibScope->getFunctionScope(fnName);
+		}
 		else {
 			auto varRef = currentScope->getVariable(paths[0]);
 			auto classValue = varRef->getClassValue();

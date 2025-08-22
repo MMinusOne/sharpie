@@ -13,7 +13,6 @@
 #include "Interpretter.h";
 #include "trimTokens.h";
 #include "StringMicroInterpreter.h";
-#include "httplib.h";
 
 using std::string;
 using std::cout;
@@ -83,7 +82,7 @@ void initializeStandardLib() {
 
 	Scope* import = new Scope("@import");
 
-import->allocateStandardLib([](std::vector<string> args) {
+	import->allocateStandardLib([](std::vector<string> args) {
 	vector<Scope> scopes;
 	vector<string> scopeNames;
 	string file;
@@ -176,11 +175,12 @@ import->allocateStandardLib([](std::vector<string> args) {
 	}
 	});
 
-	stdlibVar->setClassValue(stdlibScope);
 	stdlibScope->addFunctionScope("log", log);
 	stdlibScope->addFunctionScope("logln", logln);
 	stdlibScope->addFunctionScope("newLine", newLine);
 	stdlibScope->addFunctionScope("@import", import);
+	stdlibVar->setClassValue(stdlibScope);
+
 	scopeManager->addScope("stdlib", stdlibScope);
 }
 
