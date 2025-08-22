@@ -1,11 +1,9 @@
 fn logNormal(int index) {
-    log("I am now" index "years old");
-    newLine();
+    stdlib.logln("I am now" index "years old");
 }
 
 fn logHappy(int index) {
-    log("I AM FINALLY" index "YEARS OLD WIWIWIWIW");
-    newLine();
+    stdlib.logln("I AM FINALLY" index "YEARS OLD WIWIWIWIW");
 }
 
 fn main() { 

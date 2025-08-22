@@ -13,6 +13,7 @@
 #include "Interpretter.h";
 #include "trimTokens.h";
 #include "StringMicroInterpreter.h";
+#include "httplib.h";
 
 using std::string;
 using std::cout;
@@ -65,14 +66,24 @@ void initializeStandardLib() {
 		}
 		});
 
+	Scope* logln = new Scope("logln");
+	logln->allocateStandardLib([](std::vector<string> args) {
+		std::cout << "\n";
+
+		for (int i = 0; i < args.size(); i++) {
+			std::cout << args[i] << " ";
+		}
+		});
+
+
 	Scope* newLine = new Scope("newLine");
 	newLine->allocateStandardLib([](std::vector<string> args) {
 		std::cout << "\n";
 		});
 
 	Scope* import = new Scope("@import");
-	
-	import->allocateStandardLib([](std::vector<string> args) {
+
+import->allocateStandardLib([](std::vector<string> args) {
 	vector<Scope> scopes;
 	vector<string> scopeNames;
 	string file;
@@ -167,6 +178,7 @@ void initializeStandardLib() {
 
 	stdlibVar->setClassValue(stdlibScope);
 	stdlibScope->addFunctionScope("log", log);
+	stdlibScope->addFunctionScope("logln", logln);
 	stdlibScope->addFunctionScope("newLine", newLine);
 	stdlibScope->addFunctionScope("@import", import);
 	scopeManager->addScope("stdlib", stdlibScope);
@@ -237,7 +249,7 @@ void handleTopLevel(vector<string> lines) {
 				continue;
 			}
 			scopeManager->addScope(identifier, currentScope);
-			
+
 			if (identifier == "main") {
 				auto interpreter = new Interpreter(currentScope->getInstructions(), currentScope);
 				interpreter->execute();

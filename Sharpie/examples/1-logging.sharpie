@@ -1,3 +1,6 @@
 fn main () {
   stdlib.log("hi");
+  stdlib.logln("New line log");
+  stdlib.newLine();
+  stdlib.log("Manual new line");
 }

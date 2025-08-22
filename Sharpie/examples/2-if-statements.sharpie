@@ -1,17 +1,13 @@
 fn logAdultNameAndAge (string name int age) { 
-  log("I am an adult);
-  newLine();
-  log("My name is" name);
-  newLine();
-  log("My age is" age);
+  stdlig.logln("I am an adult);
+  stdlig.logln("My name is" name);
+  stdlig.logln("My age is" age);
 }
 
 fn logMinorNameAndAge (string name int age) {
-  log("I am a minor);
-  newLine();
-  log("My name is" name);
-  newLine();
-  log("My age is" age);
+  stdlib.logln("I am a minor);
+  stdlib.logln("My name is" name);
+  stdlib.logln("My age is" age);
 }
 
 fn main () {
@@ -23,7 +19,6 @@ fn main () {
   if_end 
 
   do_if (age > 18)
-    newLine();
     logAdultNameAndAge(name age);
   if_end
 }
