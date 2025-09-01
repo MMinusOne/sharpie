@@ -7,7 +7,6 @@ fn main() {
 
     for (index;1;17) 
         var string sentence = < makeSentence(name index) >;
-        log(sentence);
-        newLine();
+        stdlib.logln(sentence);
     for_end
 }

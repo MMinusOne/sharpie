@@ -17,12 +17,12 @@ class_end
 fn main() {
   var User user = new User();
   var string balance = user.balance;
-  log(balance);
+  stdlib.logln(balance);
 
   var string newBlance = "500";
   user.setBalance(newBlance);
 
   var string balanceThruFunction = < user.getBalance() >;
-  newLine();
-  log(balanceThruFunction);
+  
+  stdlib.log(balanceThruFunction);
 }
