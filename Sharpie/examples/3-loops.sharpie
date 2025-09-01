@@ -9,10 +9,11 @@ fn logHappy(int index) {
 fn main() { 
     var int start = 20;
     var int end = 31;
+    var int limit = 27;
 
     for (index;start;end)
 
-        do_if (index < 30) 
+        do_if (index < limit) 
             logNormal(index);
         if_end
 

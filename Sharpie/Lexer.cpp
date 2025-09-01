@@ -24,9 +24,18 @@ enum INSTRUCTION {
 
     IF_STATEMENT,
     END_IF_STATEMENT,
+
     FOR_STATEMENT,
     FOR_END_STATEMENT,
 
+    CLASS_DECLARATION,
+    END_CLASS_DECLARATION,
+
+    PLUS,
+    MINUS,
+    MULTIPLY,
+    DIVIDE,
+    EXPOSE
 };
 
 Lexer::Lexer(const std::string& sourceCode) : sourceCode(sourceCode) {}

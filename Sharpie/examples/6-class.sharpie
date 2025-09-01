@@ -1,10 +1,6 @@
 class User 
     var string balance = "1000";
 
-    fn constructor (int bankBalance) {
-     
-    }
-
     fn setBalance (string number) {
         var string mutate_class balance = number;
     }
