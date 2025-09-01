@@ -1,6 +1,5 @@
-fn loopTo(int to) { 
+fn loopTo(string to) { 
     for(index;1;to) 
-        log("LOGGING TO" to "CURRENTLY AT" index);
-        newLine();
+        stdlib.logln("LOGGING TO" to "CURRENTLY AT" index);
     for_end
 }

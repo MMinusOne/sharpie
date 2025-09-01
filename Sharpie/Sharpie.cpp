@@ -91,7 +91,7 @@ void initializeStandardLib() {
 	for (auto arg : args) {
 		if (finishedImportations) {
 			file = arg.substr(1, arg.size() - 2);
-			string importContents = readFile("./examples/" + file);
+			string importContents = readFile(file);
 
 			auto lexer = Lexer(importContents);
 			auto lines = lexer.getLines();
@@ -178,8 +178,9 @@ void initializeStandardLib() {
 	stdlibScope->addFunctionScope("log", log);
 	stdlibScope->addFunctionScope("logln", logln);
 	stdlibScope->addFunctionScope("newLine", newLine);
-	stdlibScope->addFunctionScope("@import", import);
 	stdlibVar->setClassValue(stdlibScope);
+
+	scopeManager->addScope("@import", import);
 
 	scopeManager->addScope("stdlib", stdlibScope);
 }
@@ -263,9 +264,7 @@ void handleTopLevel(vector<string> lines) {
 		else if (opcode[0] == '@') {
 			auto macro = scopeManager->getGlobal(opcode);
 			std::vector<string> relevantTokens(tokens.begin() + 1, tokens.end());
-			auto argsInterpreter = new StringMicroInterpreter(relevantTokens, currentScope);
-			auto args = split(argsInterpreter->execute(), { " " });
-			macro->executeStandardLib(args);
+			macro->executeStandardLib(relevantTokens);
 		}
 		else {
 			if (currentScope != nullptr) {
@@ -278,10 +277,10 @@ void handleTopLevel(vector<string> lines) {
 	}
 }
 
-int main() {
+int main(int argc, char* argv[] ) {
 	initializeStandardLib();
 
-	string mainCode = readFile(getMainSharpieExecutionPath());
+	string mainCode = readFile(argv[1]);
 
 	auto lexer = Lexer(mainCode);
 	auto lines = lexer.getLines();
